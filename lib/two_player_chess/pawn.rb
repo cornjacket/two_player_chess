@@ -26,6 +26,21 @@ module TwoPlayerChess
       valid_captures
     end
 
+    def moves
+      valid_moves = []      
+      if color == :white
+        possible_moves = [ [col,row+1] ]
+        possible_moves << [ col,row+2 ] if first_move
+      else
+        possible_moves = [ [col,row-1] ]
+        possible_moves << [ col,row-2 ] if first_move
+      end
+      possible_moves.each do |tuple|
+        valid_moves << tuple if on_board(tuple)
+      end      
+      valid_moves
+    end
+
     private
 
     def on_board(tuple)

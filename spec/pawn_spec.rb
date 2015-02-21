@@ -54,8 +54,8 @@ module TwoPlayerChess
       end
 
       it "returns a list of valid positions that black can capture" do
-        piece = Pawn.new(:black, [4,1])
-        expect(piece.captures).to eq [ [3,0], [5,0] ]
+        piece = Pawn.new(:black, [4,6])
+        expect(piece.captures).to eq [ [3,5], [5,5] ]
       end 
 
       it "returns a list of valid positions that are on the game board" do
@@ -70,6 +70,32 @@ module TwoPlayerChess
 
     end # context "#captures"
       
+
+    context "#moves" do
+
+      it "returns a list of valid positions for the first move for white" do
+        piece = Pawn.new(:white, [4,1])
+        expect(piece.moves).to eq [ [4,2], [4,3] ]
+      end      
+
+      it "returns a list of valid positions for the first move for black" do
+        piece = Pawn.new(:black, [4,6])
+        expect(piece.moves).to eq [ [4,5], [4,4] ]
+      end 
+
+      it "returns a list of valid positions for a non first move for white" do
+        piece = Pawn.new(:white, [4,2])
+        piece.stub(:first_move) { false }
+        expect(piece.moves).to eq [ [4,3] ]
+      end      
+
+      it "returns a list of valid positions for a non first move for black" do
+        piece = Pawn.new(:black, [4,5])
+        piece.stub(:first_move) { false }
+        expect(piece.moves).to eq [ [4,4] ]
+      end
+
+    end # context "#moves"
 
   end
 end
