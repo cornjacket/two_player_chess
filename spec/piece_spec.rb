@@ -10,13 +10,13 @@ module TwoPlayerChess
         expect { Piece.new() }.to raise_error
       end    
 
-      it "can be initialize with a color of 'White'" do
-        piece = Piece.new("White", [0,0])
-        expect(piece.color).to eq 'White'
+      it "can be initialized with a color of :white" do
+        piece = Piece.new(:white, [0,0])
+        expect(piece.color).to eq :white
       end
 
-      it "can be initialize with a location of [0,0]" do
-        piece = Piece.new("Black", [0,0])
+      it "can be initialized with a location of [0,0]" do
+        piece = Piece.new(:black, [0,0])
         expect(piece.location).to eq [0,0]
       end      
 

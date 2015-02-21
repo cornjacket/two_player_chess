@@ -11,9 +11,9 @@ module TwoPlayerChess
         expect(cell.value).to eq ''
       end
 
-      it "can be initialize with a value of 'X'" do
-        cell = Cell.new("X")
-        expect(cell.value).to eq 'X'
+      it "can be initialize with a value of 'something'" do
+        cell = Cell.new("something")
+        expect(cell.value).to eq 'something'
       end
       
 
