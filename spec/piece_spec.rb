@@ -21,11 +21,24 @@ module TwoPlayerChess
       end      
 
     end # context "#initialize"
+  
+    context "#col" do  
 
+      it "returns the col value of the location" do
+        piece = Piece.new(:white, [4,6])
+        expect(piece.col).to eq 4
+      end     
 
+    end # context "#col"
 
+    context "#row" do  
 
-      
+      it "returns the row value of the location" do
+        piece = Piece.new(:white, [4,6])
+        expect(piece.row).to eq 6
+      end     
+
+    end # context "#col"
 
   end
 end

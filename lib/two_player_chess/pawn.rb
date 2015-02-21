@@ -8,8 +8,6 @@ module TwoPlayerChess
     attr_reader :first_move
     def initialize(color, location)
       super(color, location)
-      #@color = color
-      #@location = location
       @first_move = true
     end
 
@@ -39,23 +37,6 @@ module TwoPlayerChess
         valid_moves << tuple if on_board(tuple)
       end      
       valid_moves
-    end
-
-    private
-
-    def on_board(tuple)
-      if (tuple[0] >= 0 && tuple[0] <= 7 && tuple[1] >= 0 && tuple[1] <= 7)
-      	return true
-      end
-      false
-    end
-
-    def col
-      location[0]
-    end
-
-    def row
-      location[1]
     end
 
   end
