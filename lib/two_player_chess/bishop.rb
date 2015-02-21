@@ -5,7 +5,7 @@ module TwoPlayerChess
   class Bishop < Piece
 
     attr_accessor :color, :location
-    attr_reader :first_move
+    
     def initialize(color, location)
       super(color, location)
     end
