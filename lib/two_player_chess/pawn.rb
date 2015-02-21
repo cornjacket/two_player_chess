@@ -17,10 +17,8 @@ module TwoPlayerChess
       valid_captures = []
       if color == :white
       	possible_captures = [ [col-1,row+1], [col+1,row+1] ]
-        #return [ [col-1,row+1], [col+1,row+1] ]
       else
       	possible_captures = [ [col-1,row-1], [col+1,row-1] ]
-      	#return [ [col-1,row-1], [col+1,row-1] ]
       end
       possible_captures.each do |tuple|
         valid_captures << tuple if on_board(tuple)
