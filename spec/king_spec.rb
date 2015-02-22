@@ -31,7 +31,24 @@ module TwoPlayerChess
         expect(piece.first_move).to eq true
       end
 
+      it "returns false after a call to location=" do
+        piece = King.new(:white, [0,0])
+        piece.location=([0,1])
+        expect(piece.first_move).to eq false
+      end       
+
     end # context "#first_move"
+
+
+    context "#location" do
+
+      it "sets the piece's location" do
+        piece = King.new(:white, [0,0])
+        piece.location=([0,1])
+        expect(piece.location).to eq [0,1]
+      end
+
+    end # context "#location"
 
     context "#captures" do
 
