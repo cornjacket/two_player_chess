@@ -2,14 +2,16 @@
 module TwoPlayerChess
 
 
+
+
   class Rook < Piece
 
     attr_accessor :color, :location
-    
+    attr_reader :first_move
     def initialize(color, location)
       super(color, location)
+      @first_move = true
     end
-
 
     def captures
       moves

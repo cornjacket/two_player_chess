@@ -22,6 +22,14 @@ module TwoPlayerChess
 
     end # context "#initialize"
 
+    context "#first_move" do
+
+      it "initially sets first_move to true" do
+        piece = Rook.new(:white, [0,0])
+        expect(piece.first_move).to eq true
+      end
+
+    end # context "#first_move"
 
     context "#captures" do
 
