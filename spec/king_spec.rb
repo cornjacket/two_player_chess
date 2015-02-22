@@ -52,12 +52,26 @@ module TwoPlayerChess
 
     end # context "#captures"
       
-=begin
+
     context "#moves" do
-   
+
+      it "returns a list of valid positions that can be moved to from (3,4)" do
+        piece = King.new(:white, [3,4])
+        expect(piece.moves).to eq [ [2,4], [2,5], [3,5], [4,5], [4,4], [4,3], [3,3], [2,3] ]                                     
+      end      
+
+      it "returns a list of valid positions that can be moved to from (4,3)" do
+        piece = King.new(:white, [4,3])
+        expect(piece.moves).to eq [ [3,3], [3,4], [4,4], [5,4], [5,3], [5,2], [4,2], [3,2] ]
+      end 
+
+      it "returns a list of valid positions that can be moved to from (1,6)" do
+        piece = King.new(:white, [0,6])
+        expect(piece.moves).to eq [ [0,7], [1,7], [1,6], [1,5], [0,5] ]
+      end    
 
     end # context "#moves"
-=end
+
 
   end
 end
