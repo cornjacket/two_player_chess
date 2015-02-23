@@ -21,6 +21,7 @@ module TwoPlayerChess
 # should have move_piece method
 # whats distinction between game and board in chess?
 
+
     def get_cell(x, y)
       return grid[y][x]
     end
@@ -28,6 +29,9 @@ module TwoPlayerChess
     def set_cell(x, y, value)
       cell = get_cell(x, y)
       cell.value = value
+      # set the piece's internal location to [x,y] so the piece knows where it is
+      # does the piece need to always know where it is? or can it be passed this info
+      # when it is actually needed?
       cell.value.location = [x,y] if value != nil
     end
 

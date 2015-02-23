@@ -28,15 +28,24 @@ module TwoPlayerChess
       end
     end
 
+
     context "#set_cell" do
       it "it updates the value of the cell object at a (x,y) coordinate" do
-        Cat = Struct.new(:value) 
-        grid = [ [Cat.new("cool"), "", ""], ["", "", ""], ["", "", ""] ]
-        board = Board.new(grid: grid)
-        board.set_cell(0,0,"meow")
-        expect(board.get_cell(0,0).value).to eq "meow"
+        pawn = Pawn.new(:white,[0,0]) 
+        board = Board.new
+        board.set_cell(0,0,pawn)
+        expect(board.get_cell(0,0).value).to eq pawn
       end
+
+      it "it updates the location of the piece object at a (x,y) coordinate" do
+        pawn = Pawn.new(:white,[0,0]) 
+        board = Board.new
+        board.set_cell(1,1,pawn)
+        expect(board.get_cell(1,1).value.location).to eq [1,1]
+      end
+
     end
+
 
     TestCell = Struct.new(:value)
     let(:x_cell) { TestCell.new("X") }
