@@ -6,11 +6,16 @@ module TwoPlayerChess
       @max_row = 8 # these could be changeable
       @max_col = 8 # these could be changeable      
   	  @grid = input.fetch(:grid, default_grid)
-      set_cell(3,3, Pawn.new(:white,[3,3]) ) # testing
-      #set_cell(3,4, Pawn.new(:white,[3,4]) ) # testing
-      #set_cell(3,5, Pawn.new(:white,[3,5]) ) # testing
   	end
 
+    def set_up
+# My board_spec specs are failing here because of set_cell. Do I modify tests
+# or do I have an additional method to set_up pieces. Add setup pieces so that
+# I can add corner cases to board_spec
+      set_cell(3,3, Pawn.new(:white,[3,3]) ) # testing
+      #set_cell(3,4, Pawn.new(:white,[3,4]) ) # testing
+      #set_cell(3,5, Pawn.new(:white,[3,5]) ) # testing      
+    end
 
 # get_cell and set_sell should be private
 # should have move_piece method

@@ -6,6 +6,7 @@ module TwoPlayerChess
   	def initialize(players, board = Board.new)
   	  @players = players
   	  @board = board
+      board.set_up
   	  @current_player, @other_player = players.shuffle
   	end
 
