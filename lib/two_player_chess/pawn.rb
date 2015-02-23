@@ -17,6 +17,11 @@ module TwoPlayerChess
       super tuple
     end
 
+    # testing for now
+    def display
+      "P"
+    end
+
     def captures
       valid_captures = []
       if color == :white

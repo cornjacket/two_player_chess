@@ -6,15 +6,24 @@ module TwoPlayerChess
       @max_row = 8 # these could be changeable
       @max_col = 8 # these could be changeable      
   	  @grid = input.fetch(:grid, default_grid)
+      set_cell(3,3, Pawn.new(:white,[3,3]) ) # testing
+      #set_cell(3,4, Pawn.new(:white,[3,4]) ) # testing
+      #set_cell(3,5, Pawn.new(:white,[3,5]) ) # testing
   	end
 
+
+# get_cell and set_sell should be private
+# should have move_piece method
+# whats distinction between game and board in chess?
 
     def get_cell(x, y)
       return grid[y][x]
     end
 
     def set_cell(x, y, value)
-      get_cell(x, y).value = value    
+      cell = get_cell(x, y)
+      cell.value = value
+      cell.value.location = [x,y] if value != nil
     end
 
 
@@ -26,7 +35,7 @@ module TwoPlayerChess
 
     def formatted_grid
     	grid.each do |row|
-    		puts row.map { |cell| cell.value.empty? ? "_" : cell.value }.join(" ")
+    		puts row.map { |cell| cell.value.nil? ? "_" : cell.value.display }.join(" ")
         end
     end
 
@@ -35,6 +44,7 @@ module TwoPlayerChess
     end
 
     def winner?
+      return true if !get_cell(0,0).value.nil? # testing
       false
     end
 
