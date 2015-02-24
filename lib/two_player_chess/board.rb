@@ -13,8 +13,8 @@ module TwoPlayerChess
 # or do I have an additional method to set_up pieces. Add setup pieces so that
 # I can add corner cases to board_spec
       set_cell(3,3, Pawn.new(:white,[3,3]) ) # testing
-      #set_cell(3,4, Pawn.new(:white,[3,4]) ) # testing
-      #set_cell(3,5, Pawn.new(:white,[3,5]) ) # testing      
+      set_cell(3,4, Bishop.new(:black,[3,4]) ) # testing
+      set_cell(3,5, Pawn.new(:white,[3,5]) ) # testing      
     end
 
 # returns :move if it is a valid move
@@ -26,17 +26,27 @@ module TwoPlayerChess
       source = get_cell(from_x,from_y).value
       destination = get_cell(to_x, to_y).value
       # this should be checked at input - check if source and destintion are on_board
-      
+
+if source == nil
+  puts "source == nil"
+elsif color != source.color
+  puts "color != source.color"
+elsif (destination != nil && color == destination.color)
+  puts "destination != nil &&"
+elsif destination != nil
+  puts "capture"
+else
+  puts "move"
+end
+
       # then check if piece exists to move at source
       return false if source == nil
       # then check if calling player is same as piece color
       return false if color != source.color
       # check if piece is not occupied by own piece
       return false if (destination != nil && color == destination.color)
-      # check if moving piece to destination will indirectlycause check for king
+      # check if moving piece to destination will indirectly cause check for king
       # what about directly causing check for king - how is that remedied
-
-      # check if move is a castle
 
       # check if move may cause an en_passe in opponent's next move
 
@@ -48,12 +58,17 @@ module TwoPlayerChess
       # already checked for same color
       if destination != nil
         # capture scenario, now check if valid capture by asking piece TODO
-        return :capture
+        puts "Valid captures = #{source.captures}"
+        return :capture if source.captures.include?([to_x,to_y])
       else
         # move scenario, now check if valid move by asking piece TODO
-        return :move
+        # also check for castle
+        # also check for pawn first move
+        puts "Valid moves = #{source.moves}"
+        return :move if source.moves.include?([to_x,to_y])
       end
 
+      puts "Not a valid move or capture"
       return false
     end
 

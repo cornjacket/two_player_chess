@@ -21,6 +21,10 @@ module TwoPlayerChess
     def row
       location[1]
     end
+
+    def special_move
+      false
+    end
       
   end
 end

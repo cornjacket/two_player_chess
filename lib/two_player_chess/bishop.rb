@@ -10,12 +10,15 @@ module TwoPlayerChess
       super(color, location)
     end
 
+    def display
+      "B"
+    end
 
     def captures
       moves
     end
 
-
+# there is a bug in this movement
     def moves
       valid_moves = []     
       # first find positive diagonal moves
