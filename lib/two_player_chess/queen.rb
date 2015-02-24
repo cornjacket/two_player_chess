@@ -4,20 +4,24 @@ module TwoPlayerChess
 
   class Queen < Piece
 
-    attr_accessor :color, :location
+    attr_accessor :color
     
-    def initialize(color, location)
-      super(color, location)
+    def initialize(color)
+      super(color)
     end
 
+    def display
+      "Q"
+    end
 
-    def captures
-      moves
+    def captures(col, row)
+      moves(col, row)
     end
 
     # Maybe this code should be refactored with Rook and Bishop and placed inside
     # Piece so that it is common code instead copied in multiple places
-    def moves
+    def moves(col, row)
+      location = [col,row]
       valid_moves = []     
       # first find positive diagonal moves
       if col < row

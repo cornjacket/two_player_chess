@@ -5,24 +5,24 @@ module TwoPlayerChess
   class Pawn < Piece
 
     attr_accessor :color, :first_move
-    attr_reader :location
+    #attr_reader :location
  
-    def initialize(color, location)
-      super(color, location)
+    def initialize(color) #, location)
+      super(color) #, location)
       @first_move = true
     end
-
+=begin
     def location=(tuple)
       @first_move = false
       super tuple
     end
-
+=end
     # testing for now
     def display
       "P"
     end
 
-    def captures
+    def captures(col, row)
       valid_captures = []
       if color == :white
       	possible_captures = [ [col-1,row+1], [col+1,row+1] ]
@@ -35,7 +35,7 @@ module TwoPlayerChess
       valid_captures
     end
 
-    def moves
+    def moves(col, row)
       valid_moves = []      
       if color == :white
         possible_moves = [ [col,row+1] ]
@@ -51,7 +51,7 @@ module TwoPlayerChess
     end
 
     def special_move
-      true
+      :two_step
     end
 
   end

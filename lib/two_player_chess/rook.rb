@@ -7,24 +7,23 @@ module TwoPlayerChess
   class Rook < Piece
 
     attr_accessor :color, :first_move
-    attr_reader :location
 
-    def initialize(color, location)
-      super(color, location)
+    def initialize(color)
+      super(color)
       @first_move = true
     end
 
-    def location=(tuple)
-      @first_move = false
-      super tuple
+    def display
+      "R"
     end
 
-    def captures
-      moves
+    def captures(col, row)
+      moves(col, row)
     end
 
 
-    def moves
+    def moves(col, row)
+      location = [col,row]
       valid_moves = []     
       # first vertical moves
       8.times do |i|
@@ -42,7 +41,7 @@ module TwoPlayerChess
     end
 
     def special_move
-      true
+      :castle
     end
 
   end

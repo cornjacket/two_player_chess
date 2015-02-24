@@ -15,9 +15,9 @@ module TwoPlayerChess
 
 # I need to remove the [1,2] and [3,4] and [5,6] since it is redundant info. Just pass it in to captures and moves
 
-      set_cell(1,2, Pawn.new(:white,[1,2]), {:first_move => true} ) # testing
-      set_cell(3,4, Bishop.new(:black,[3,4]) ) # testing
-      set_cell(5,6, Pawn.new(:black,[5,6]), {:first_move => true} ) # testing      
+      set_cell(1,2, Pawn.new(:white), {:first_move => true} ) # testing
+      set_cell(3,4, Bishop.new(:black) ) # testing
+      set_cell(5,6, Pawn.new(:black), {:first_move => true} ) # testing      
     end
 
 # returns :move if it is a valid move
@@ -61,14 +61,14 @@ end
       # already checked for same color
       if destination != nil
         # capture scenario, now check if valid capture by asking piece TODO
-        puts "Valid captures = #{source.captures}"
-        return :capture if source.captures.include?([to_x,to_y])
+        puts "Valid captures = #{source.captures(from_x,from_y)}"
+        return :capture if source.captures(from_x,from_y).include?([to_x,to_y])
       else
         # move scenario, now check if valid move by asking piece TODO
         # also check for castle
         # also check for pawn first move
-        puts "Valid moves = #{source.moves}"
-        return :move if source.moves.include?([to_x,to_y])
+        puts "Valid moves = #{source.moves(from_x, from_y)}"
+        return :move if source.moves(from_x,from_y).include?([to_x,to_y])
       end
 
       puts "Not a valid move or capture"
@@ -82,7 +82,6 @@ end
       piece = get_cell(from_x,from_y).value
       set_cell(to_x,to_y, piece)
       set_cell(from_x,from_y, nil)
-      puts "New internal x,y = #{piece.col},#{piece.row}"
     end
 
     def get_cell(x, y)
@@ -96,7 +95,7 @@ end
       # set the piece's internal location to [x,y] so the piece knows where it is
       # does the piece need to always know where it is? or can it be passed this info
       # when it is actually needed? -- THE FOLLOWING WILL BE REMOVED since it is redundant
-      cell.value.location = [x,y] if value != nil
+      #cell.value.location = [x,y] if value != nil
       # Handle first move
       if value != nil && cell.value.special_move != false
         if set_first_move == true

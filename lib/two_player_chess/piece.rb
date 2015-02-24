@@ -1,10 +1,10 @@
 #lib/two_player_chess/piece.rb
 module TwoPlayerChess
   class Piece
-    attr_accessor :color, :location
-    def initialize(color, location)
+
+    attr_accessor :color
+    def initialize(color)
       @color = color
-      @location = location
     end
     
     def on_board(tuple)
@@ -13,14 +13,6 @@ module TwoPlayerChess
       end
       false
     end  
-
-    def col
-      location[0]
-    end
-
-    def row
-      location[1]
-    end
 
     def special_move
       false

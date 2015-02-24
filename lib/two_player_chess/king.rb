@@ -5,23 +5,21 @@ module TwoPlayerChess
   class King < Piece
 
     attr_accessor :color, :first_move
-    attr_reader :location
 
-    def initialize(color, location)
-      super(color, location)
+    def initialize(color)
+      super(color)
       @first_move = true
     end
 
-    def location=(tuple)
-      @first_move = false
-      super tuple
+    def display
+      "K"
     end
 
-    def captures
-      moves
+    def captures(col, row)
+      moves(col, row)
     end
 
-    def moves
+    def moves(col, row)
       valid_moves = []
       inc =  [ [-1,0], [-1,1], [0,1], [1,1], [1,0], [1,-1], [0,-1], [-1,-1] ]
       inc.each do |tuple| 

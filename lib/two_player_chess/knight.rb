@@ -4,19 +4,22 @@ module TwoPlayerChess
 
   class Knight < Piece
 
-    attr_accessor :color, :location
+    attr_accessor :color
     
-    def initialize(color, location)
-      super(color, location)
+    def initialize(color)
+      super(color)
+    end
+
+    def display
+      "N"
+    end
+
+    def captures(col, row)
+      moves(col, row)
     end
 
 
-    def captures
-      moves
-    end
-
-
-    def moves
+    def moves(col, row)
       valid_moves = []
       inc =  [ [-1,2], [-2,1], [-2,-1], [-1,-2], [1,-2], [2,-1], [2,1], [1,2] ]
       inc.each do |tuple| 

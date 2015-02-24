@@ -4,22 +4,23 @@ module TwoPlayerChess
 
   class Bishop < Piece
 
-    attr_accessor :color, :location
+    attr_accessor :color
     
-    def initialize(color, location)
-      super(color, location)
+    def initialize(color)
+      super(color)
     end
 
     def display
       "B"
     end
 
-    def captures
-      moves
+    def captures(col, row)
+      moves(col, row)
     end
 
 # there is a bug in this movement
-    def moves
+    def moves(col, row)
+      location = [col,row]
       valid_moves = []     
       # first find positive diagonal moves
       if col < row
