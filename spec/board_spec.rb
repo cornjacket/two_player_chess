@@ -20,6 +20,70 @@ module TwoPlayerChess
       end
     end
 
+
+    context "#valid_move?" do
+      it "returns false when player tries to move an empty square" do
+        board = Board.new
+        expect(board.valid_move?(:white,0,0,0,1)).to eq false
+      end
+
+      it "returns false when player tries to move an opponent's piece" do
+        pawn = Pawn.new(:white,[0,0]) 
+        board = Board.new
+        board.set_cell(0,0,pawn)
+        expect(board.valid_move?(:black,0,0,0,1)).to eq false
+      end      
+
+      it "returns false when player tries to move on to a square already occupied with the same colored piece" do
+        pawn = Pawn.new(:white,[0,0]) 
+        bishop = Bishop.new(:white,[0,1])
+        board = Board.new
+        board.set_cell(0,0,pawn)
+        board.set_cell(0,1,bishop)
+        expect(board.valid_move?(:white,0,0,0,1)).to eq false
+      end
+
+      it "returns :capture when player tries to capture an opposing piece" do
+        pawn = Pawn.new(:white,[0,0]) 
+        bishop = Bishop.new(:black,[0,1])
+        board = Board.new
+        board.set_cell(0,0,pawn)
+        board.set_cell(0,1,bishop)
+        expect(board.valid_move?(:white,0,0,0,1)).to eq :capture
+      end
+
+      it "returns :move when player tries to make a valid move" do
+        pawn = Pawn.new(:white,[0,0]) 
+        board = Board.new
+        board.set_cell(0,0,pawn)
+        expect(board.valid_move?(:white,0,0,0,1)).to eq :move
+      end
+
+## TODO - add tests for pieces blocking other pieces to make sure
+# that pieces' movements are bounded correctly
+
+    end
+
+
+    context "#move_piece" do
+      it "sets the value of the old (x,y) position to nil" do
+        pawn = Pawn.new(:white,[0,0]) 
+        board = Board.new
+        board.set_cell(0,0,pawn)
+        board.move_piece(0,0,1,0)
+        expect(board.get_cell(0,0).value).to eq nil
+      end
+
+      it "sets the value of the new (x,y) position to the piece" do
+        pawn = Pawn.new(:white,[0,0]) 
+        board = Board.new
+        board.set_cell(0,0,pawn)
+        board.move_piece(0,0,1,0)
+        expect(board.get_cell(1,0).value).to eq pawn
+      end
+
+    end
+
     context "#get_cell" do
       it "returns the cell based on the (x,y) coordinate" do
         grid = [ ["", "", ""], ["", "", "something"], ["", "", ""] ]
@@ -30,14 +94,14 @@ module TwoPlayerChess
 
 
     context "#set_cell" do
-      it "it updates the value of the cell object at a (x,y) coordinate" do
+      it "updates the value of the cell object at a (x,y) coordinate" do
         pawn = Pawn.new(:white,[0,0]) 
         board = Board.new
         board.set_cell(0,0,pawn)
         expect(board.get_cell(0,0).value).to eq pawn
       end
 
-      it "it updates the location of the piece object at a (x,y) coordinate" do
+      it "updates the location of the piece object at a (x,y) coordinate" do
         pawn = Pawn.new(:white,[0,0]) 
         board = Board.new
         board.set_cell(1,1,pawn)

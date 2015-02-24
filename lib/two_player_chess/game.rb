@@ -43,12 +43,7 @@ module TwoPlayerChess
         to_y = get_move.to_i
         puts "from (#{from_x},#{from_y}) => (#{to_x},#{to_y})"
 
-
-        piece = board.get_cell(from_x,from_y).value
-
-        board.set_cell(to_x,to_y, piece)
-        board.set_cell(from_x,from_y, nil)
-        puts "New internal x,y = #{piece.col},#{piece.row}"
+        board.move_piece(from_x, from_y, to_x, to_y)
 
         if board.game_over
           puts game_over_message
