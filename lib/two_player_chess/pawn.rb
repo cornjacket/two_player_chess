@@ -50,6 +50,10 @@ module TwoPlayerChess
       valid_moves
     end
 
+    def special_move
+      true
+    end
+
   end
 
 

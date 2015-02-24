@@ -12,9 +12,12 @@ module TwoPlayerChess
 # My board_spec specs are failing here because of set_cell. Do I modify tests
 # or do I have an additional method to set_up pieces. Add setup pieces so that
 # I can add corner cases to board_spec
-      set_cell(3,3, Pawn.new(:white,[3,3]) ) # testing
+
+# I need to remove the [1,2] and [3,4] and [5,6] since it is redundant info. Just pass it in to captures and moves
+
+      set_cell(1,2, Pawn.new(:white,[1,2]), {:first_move => true} ) # testing
       set_cell(3,4, Bishop.new(:black,[3,4]) ) # testing
-      set_cell(3,5, Pawn.new(:white,[3,5]) ) # testing      
+      set_cell(5,6, Pawn.new(:black,[5,6]), {:first_move => true} ) # testing      
     end
 
 # returns :move if it is a valid move
@@ -86,13 +89,23 @@ end
       return grid[y][x]
     end
 
-    def set_cell(x, y, value)
+    def set_cell(x, y, value, input = {})
+      set_first_move = input.fetch(:first_move, false)
       cell = get_cell(x, y)
       cell.value = value
       # set the piece's internal location to [x,y] so the piece knows where it is
       # does the piece need to always know where it is? or can it be passed this info
-      # when it is actually needed?
+      # when it is actually needed? -- THE FOLLOWING WILL BE REMOVED since it is redundant
       cell.value.location = [x,y] if value != nil
+      # Handle first move
+      if value != nil && cell.value.special_move != false
+        if set_first_move == true
+          cell.value.first_move = true
+        else
+          cell.value.first_move = false
+        end
+      end
+
     end
 
 

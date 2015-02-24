@@ -25,6 +25,6 @@ module TwoPlayerChess
     def special_move
       false
     end
-      
+
   end
 end

@@ -31,6 +31,9 @@ module TwoPlayerChess
       valid_moves
     end
 
+    def special_move
+      :castle
+    end
 
   end
 
