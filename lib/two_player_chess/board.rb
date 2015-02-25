@@ -2,14 +2,17 @@ module TwoPlayerChess
   class Board
     attr_reader :max_row, :max_col
   	attr_reader :grid
+    attr_accessor :white_king, :black_king
   	def initialize(input = {})
       @max_row = 8 # these could be changeable
       @max_col = 8 # these could be changeable      
-  	  @grid = input.fetch(:grid, default_grid)
+  	  @grid = input.fetch(:grid, default_grid)  
   	end
 
     def set_up
 
+      self.white_king = King.new(:white)
+      self.black_king = King.new(:black)
       8.times do |i|
         set_cell(i,1, Pawn.new(:white), {:first_move => true} )
         set_cell(i,6, Pawn.new(:black), {:first_move => true} )
@@ -18,7 +21,7 @@ module TwoPlayerChess
       set_cell(1,0, Knight.new(:white))
       set_cell(2,0, Bishop.new(:white))
       set_cell(3,0, Queen.new(:white))
-      set_cell(4,0, King.new(:white), {:first_move => true} )
+      set_cell(4,0, white_king, {:first_move => true} )
       set_cell(5,0, Bishop.new(:white))
       set_cell(6,0, Knight.new(:white))
       set_cell(7,0, Rook.new(:white), {:first_move => true} )
@@ -26,11 +29,10 @@ module TwoPlayerChess
       set_cell(1,7, Knight.new(:black))
       set_cell(2,7, Bishop.new(:black))
       set_cell(3,7, Queen.new(:black))
-      set_cell(4,7, King.new(:black), {:first_move => true} )
+      set_cell(4,7, black_king, {:first_move => true} )
       set_cell(5,7, Bishop.new(:black))
       set_cell(6,7, Knight.new(:black))
       set_cell(7,7, Rook.new(:black), {:first_move => true} )
-
     end
 
 # returns :move if it is a valid move
@@ -157,6 +159,9 @@ end
 
     end
 
+    def in_check(color)
+      
+    end
 
     def game_over
       return :winner if winner?

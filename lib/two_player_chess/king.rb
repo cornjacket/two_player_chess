@@ -1,4 +1,4 @@
-#lib/two_player_chess/piece.rb
+#lib/two_player_chess/king.rb
 module TwoPlayerChess
 
 

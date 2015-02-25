@@ -142,8 +142,33 @@ module TwoPlayerChess
     end
 
 
-#closest_rook_can_castle?(color,from_x,from_y,to_x)
+    context "#white_king" do
+      it "initially is nil" do
+        board = Board.new()
+        expect(board.white_king).to eq nil
+      end
 
+      it "is set to the white king after set_up" do
+        board = Board.new()
+        board.set_up
+        expect(board.white_king.special_move).to eq :king_castle
+      end
+
+    end
+
+    context "#black_king" do
+      it "initially is nil" do
+        board = Board.new()
+        expect(board.black_king).to eq nil
+      end
+
+      it "is set to the black king after set_up" do
+        board = Board.new()
+        board.set_up
+        expect(board.black_king.special_move).to eq :king_castle
+      end
+
+    end    
 
     context "#closest_root_can_castle?" do
 
@@ -219,7 +244,22 @@ module TwoPlayerChess
         expect(board.closest_rook_can_castle?(:white,from_x,from_y,to_x)).to eq false
       end
 
+      it "returns false when white king attempts to castle if the rook has been captured" do 
+        board = Board.new
+        board.set_up
+        board.set_cell(5,0,nil)
+        board.set_cell(6,0,nil)
+        board.set_cell(7,0,nil)
+        from_x = 4
+        from_y = 0
+        to_x = 4+2
+        expect(board.closest_rook_can_castle?(:white,from_x,from_y,to_x)).to eq false
+      end
+
     end
+
+
+
 
     TestCell = Struct.new(:value)
     let(:x_cell) { TestCell.new("X") }
