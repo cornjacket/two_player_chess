@@ -14,10 +14,30 @@ module TwoPlayerChess
 # I can add corner cases to board_spec
 
 # I need to remove the [1,2] and [3,4] and [5,6] since it is redundant info. Just pass it in to captures and moves
+      8.times do |i|
+        set_cell(i,1, Pawn.new(:white), {:first_move => true} )
+        set_cell(i,6, Pawn.new(:black), {:first_move => true} )
+      end
+      #set_cell(1,2, Pawn.new(:white), {:first_move => true} ) # testing
+      #set_cell(3,4, Bishop.new(:black) ) # testing
+      #set_cell(5,6, Pawn.new(:black), {:first_move => true} ) # testing      
+      set_cell(0,0, Rook.new(:white), {:first_move => true} )
+      set_cell(1,0, Knight.new(:white))
+      set_cell(2,0, Bishop.new(:white))
+      set_cell(3,0, Queen.new(:white))
+      set_cell(4,0, King.new(:white), {:first_move => true} )
+      set_cell(5,0, Bishop.new(:white))
+      set_cell(6,0, Knight.new(:white))
+      set_cell(7,0, Rook.new(:white), {:first_move => true} )
+      set_cell(0,7, Rook.new(:black), {:first_move => true} )
+      set_cell(1,7, Knight.new(:black))
+      set_cell(2,7, Bishop.new(:black))
+      set_cell(3,7, Queen.new(:black))
+      set_cell(4,7, King.new(:black), {:first_move => true} )
+      set_cell(5,7, Bishop.new(:black))
+      set_cell(6,7, Knight.new(:black))
+      set_cell(7,7, Rook.new(:black), {:first_move => true} )
 
-      set_cell(1,2, Pawn.new(:white), {:first_move => true} ) # testing
-      set_cell(3,4, Bishop.new(:black) ) # testing
-      set_cell(5,6, Pawn.new(:black), {:first_move => true} ) # testing      
     end
 
 # returns :move if it is a valid move
@@ -86,15 +106,12 @@ end
       return grid[y][x]
     end
 
+    # set_cell is used to init the board with pieces along with as a helper function to move and
+    # and clear pieces on the board
     def set_cell(x, y, value, input = {})
       set_first_move = input.fetch(:first_move, false)
       cell = get_cell(x, y)
       cell.value = value
-      # set the piece's internal location to [x,y] so the piece knows where it is
-      # does the piece need to always know where it is? or can it be passed this info
-      # when it is actually needed? -- THE FOLLOWING WILL BE REMOVED since it is redundant
-      #cell.value.location = [x,y] if value != nil
-      # Handle first move
       if value != nil && cell.value.special_move != false
         if set_first_move == true
           cell.value.first_move = true
@@ -123,7 +140,7 @@ end
     end
 
     def winner?
-      return true if !get_cell(0,0).value.nil? # testing
+      return true if !get_cell(0,2).value.nil? # upper left white pawn moves one square
       false
     end
 
