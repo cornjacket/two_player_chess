@@ -11,7 +11,7 @@ module TwoPlayerChess
       @first_move = true
     end
 
-    def display
+    def to_s
       "P"
     end
 

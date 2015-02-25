@@ -9,18 +9,11 @@ module TwoPlayerChess
   	end
 
     def set_up
-# My board_spec specs are failing here because of set_cell. Do I modify tests
-# or do I have an additional method to set_up pieces. Add setup pieces so that
-# I can add corner cases to board_spec
 
-# I need to remove the [1,2] and [3,4] and [5,6] since it is redundant info. Just pass it in to captures and moves
       8.times do |i|
         set_cell(i,1, Pawn.new(:white), {:first_move => true} )
         set_cell(i,6, Pawn.new(:black), {:first_move => true} )
-      end
-      #set_cell(1,2, Pawn.new(:white), {:first_move => true} ) # testing
-      #set_cell(3,4, Bishop.new(:black) ) # testing
-      #set_cell(5,6, Pawn.new(:black), {:first_move => true} ) # testing      
+      end    
       set_cell(0,0, Rook.new(:white), {:first_move => true} )
       set_cell(1,0, Knight.new(:white))
       set_cell(2,0, Bishop.new(:white))
@@ -74,6 +67,23 @@ end
       # check if move may cause an en_passe in opponent's next move
 
       # check if move is an en_passe
+=begin
+      # check if castle
+      if source.special_move == :king_castle && source.first_move == true
+        puts "castle 1"
+        if from_y == to_y && abs(from_x-to_x) == 2 # destination is 2 spaces to the horizonal of the source
+          puts "castle 2"
+# later add for escaping check or going into check
+          return :castle if closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if 
+         
+        end
+      end
+=end
+      # closest rook exists (not nil and special_move == :rook_castle) where it should, match color, first_move is true, 
+      # closest initial rook square to destination has a rook with first_move == true
+      # empty spaces in between source and closest rook position
+      # empty_squares_between(from_x,from_y,to_y)
+
 
       # check if move is a capture or just a move by seeing if destination is
       # occupied by opposite color, then check if piece can move to destination
@@ -93,6 +103,31 @@ end
 
       puts "Not a valid move or capture"
       return false
+    end
+
+# need tests for this
+    def closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if 
+      rook_x = (to_x > 4) ? 7 : 0
+      rook_y = from_y
+      rook = get_cell(rook_x,rook_y).value
+      if rook != nil && rook.special_move == :rook_castle && rook.first_move == true && rook.color == color && empty_squares_between?(from_x, from_y, rook_x) 
+        return true
+      end
+      false
+    end
+    
+      # closest rook exists (not nil and special_move == :rook_castle) where it should, match color, first_move is true, 
+      # closest initial rook square to destination has a rook with first_move == true
+      # empty spaces in between source and closest rook position
+
+    def empty_squares_between?(from_x,from_y,to_x)
+      return_value = true
+      start = (from_x < to_x) ? from_x+1 : to_x+1
+      stop  = (to_x > from_x) ? to_x-1 : from_x-1
+      start.upto(stop) do |i|
+        return_value = false if get_cell(i, from_y).value != nil
+      end
+      return_value
     end
 
 
@@ -131,7 +166,7 @@ end
 
     def formatted_grid
     	grid.each do |row|
-    		puts row.map { |cell| cell.value.nil? ? "_" : cell.value.display }.join(" ")
+    		puts row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ")
         end
     end
 

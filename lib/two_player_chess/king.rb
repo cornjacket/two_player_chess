@@ -11,7 +11,7 @@ module TwoPlayerChess
       @first_move = true
     end
 
-    def display
+    def to_s
       "K"
     end
 
@@ -26,11 +26,13 @@ module TwoPlayerChess
         new_move = [col+tuple[0],row+tuple[1]]
         valid_moves << new_move if on_board(new_move)
       end
+      # check for castling
+
       valid_moves
     end
 
     def special_move
-      :castle
+      :king_castle
     end
 
   end

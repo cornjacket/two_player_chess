@@ -28,15 +28,15 @@ module TwoPlayerChess
       end
 
       it "returns false when player tries to move an opponent's piece" do
-        pawn = Pawn.new(:white,[0,0]) 
+        pawn = Pawn.new(:white) 
         board = Board.new
         board.set_cell(0,0,pawn)
         expect(board.valid_move?(:black,0,0,0,1)).to eq false
       end      
 
       it "returns false when player tries to move on to a square already occupied with the same colored piece" do
-        pawn = Pawn.new(:white,[0,0]) 
-        bishop = Bishop.new(:white,[0,1])
+        pawn = Pawn.new(:white) 
+        bishop = Bishop.new(:white)
         board = Board.new
         board.set_cell(0,0,pawn)
         board.set_cell(0,1,bishop)
@@ -44,16 +44,16 @@ module TwoPlayerChess
       end
 
       it "returns :capture when player tries to capture an opposing piece" do
-        pawn = Pawn.new(:white,[0,0]) 
-        bishop = Bishop.new(:black,[0,1])
+        pawn = Pawn.new(:white) 
+        bishop = Bishop.new(:black)
         board = Board.new
-        board.set_cell(0,0,pawn)
-        board.set_cell(0,1,bishop)
-        expect(board.valid_move?(:white,0,0,0,1)).to eq :capture
+        board.set_cell(0,1,pawn)
+        board.set_cell(1,2,bishop)
+        expect(board.valid_move?(:white,0,1,1,2)).to eq :capture
       end
 
       it "returns :move when player tries to make a valid move" do
-        pawn = Pawn.new(:white,[0,0]) 
+        pawn = Pawn.new(:white) 
         board = Board.new
         board.set_cell(0,0,pawn)
         expect(board.valid_move?(:white,0,0,0,1)).to eq :move
@@ -67,7 +67,7 @@ module TwoPlayerChess
 
     context "#move_piece" do
       it "sets the value of the old (x,y) position to nil" do
-        pawn = Pawn.new(:white,[0,0]) 
+        pawn = Pawn.new(:white) 
         board = Board.new
         board.set_cell(0,0,pawn)
         board.move_piece(0,0,1,0)
@@ -75,7 +75,7 @@ module TwoPlayerChess
       end
 
       it "sets the value of the new (x,y) position to the piece" do
-        pawn = Pawn.new(:white,[0,0]) 
+        pawn = Pawn.new(:white) 
         board = Board.new
         board.set_cell(0,0,pawn)
         board.move_piece(0,0,1,0)
@@ -95,21 +95,51 @@ module TwoPlayerChess
 
     context "#set_cell" do
       it "updates the value of the cell object at a (x,y) coordinate" do
-        pawn = Pawn.new(:white,[0,0]) 
+        pawn = Pawn.new(:white) 
         board = Board.new
         board.set_cell(0,0,pawn)
         expect(board.get_cell(0,0).value).to eq pawn
       end
 
-      it "updates the location of the piece object at a (x,y) coordinate" do
-        pawn = Pawn.new(:white,[0,0]) 
+    end
+
+    context "#empty_squares_between?" do
+
+      it "returns true when all squares between from_x and to_x (from_x < to_x) on the same row are empty" do 
         board = Board.new
-        board.set_cell(1,1,pawn)
-        expect(board.get_cell(1,1).value.location).to eq [1,1]
+        board.set_up
+        board.set_cell(5,0,nil)
+        board.set_cell(6,0,nil)
+        from_x = 4
+        from_y = 0
+        to_x = 7
+        expect(board.empty_squares_between?(from_x,from_y,to_x)).to eq true
+      end
+
+      it "returns true when all squares between from_x and to_x (from_x > to_x) on the same row are empty" do 
+        board = Board.new
+        board.set_up
+        board.set_cell(1,0,nil)
+        board.set_cell(2,0,nil)
+        board.set_cell(3,0,nil)
+        from_x = 4
+        from_y = 0
+        to_x = 0
+        expect(board.empty_squares_between?(from_x,from_y,to_x)).to eq true
+      end
+
+      it "returns false when at least one squares between from_x and to_x on the same row is not empty" do 
+        board = Board.new
+        board.set_up
+        board.set_cell(1,0,nil)
+        board.set_cell(3,0,nil)
+        from_x = 4
+        from_y = 0
+        to_x = 0
+        expect(board.empty_squares_between?(from_x,from_y,to_x)).to eq false
       end
 
     end
-
 
     TestCell = Struct.new(:value)
     let(:x_cell) { TestCell.new("X") }

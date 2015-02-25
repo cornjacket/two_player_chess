@@ -10,7 +10,7 @@ module TwoPlayerChess
       super(color)
     end
 
-    def display
+    def to_s
       "Q"
     end
 

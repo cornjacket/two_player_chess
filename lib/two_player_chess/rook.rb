@@ -13,7 +13,7 @@ module TwoPlayerChess
       @first_move = true
     end
 
-    def display
+    def to_s
       "R"
     end
 
@@ -57,7 +57,7 @@ module TwoPlayerChess
     end
 
     def special_move
-      :castle
+      :rook_castle
     end
 
   end
