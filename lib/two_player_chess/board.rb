@@ -2,15 +2,38 @@ module TwoPlayerChess
   class Board
     attr_reader :max_row, :max_col
   	attr_reader :grid
+    # these could be private later but i think internal self references must be removed
     attr_accessor :white_king, :black_king
+    attr_accessor :white_king_loc, :black_king_loc
+
   	def initialize(input = {})
       @max_row = 8 # these could be changeable
       @max_col = 8 # these could be changeable      
   	  @grid = input.fetch(:grid, default_grid)  
   	end
 
+    def king(color)
+      return self.white_king if color == :white
+      self.black_king
+    end
+
+    def get_king_location(color)
+      return self.white_king_loc if color == :white
+      self.black_king_loc
+    end
+
+    def set_king_location(color, location)
+      if color == :white
+        self.white_king_loc = location
+      else
+        self.black_king_loc = location
+      end
+    end
+
     def set_up
 
+      self.white_king_loc = [4,0]
+      self.black_king_loc = [4,7]
       self.white_king = King.new(:white)
       self.black_king = King.new(:black)
       8.times do |i|
@@ -21,7 +44,7 @@ module TwoPlayerChess
       set_cell(1,0, Knight.new(:white))
       set_cell(2,0, Bishop.new(:white))
       set_cell(3,0, Queen.new(:white))
-      set_cell(4,0, white_king, {:first_move => true} )
+      set_cell(white_king_loc[0],white_king_loc[1], white_king, {:first_move => true} )
       set_cell(5,0, Bishop.new(:white))
       set_cell(6,0, Knight.new(:white))
       set_cell(7,0, Rook.new(:white), {:first_move => true} )
@@ -29,7 +52,7 @@ module TwoPlayerChess
       set_cell(1,7, Knight.new(:black))
       set_cell(2,7, Bishop.new(:black))
       set_cell(3,7, Queen.new(:black))
-      set_cell(4,7, black_king, {:first_move => true} )
+      set_cell(black_king_loc[0],black_king_loc[1], black_king, {:first_move => true} )
       set_cell(5,7, Bishop.new(:black))
       set_cell(6,7, Knight.new(:black))
       set_cell(7,7, Rook.new(:black), {:first_move => true} )

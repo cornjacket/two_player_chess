@@ -142,33 +142,66 @@ module TwoPlayerChess
     end
 
 
-    context "#white_king" do
-      it "initially is nil" do
+    context "#king" do
+      it "is initially nil" do
         board = Board.new()
-        expect(board.white_king).to eq nil
+        expect(board.king(:white)).to eq nil
       end
 
-      it "is set to the white king after set_up" do
+      it "is can refer to the white king after set_up" do
         board = Board.new()
         board.set_up
-        expect(board.white_king.special_move).to eq :king_castle
+        expect(board.king(:white).special_move).to eq :king_castle
+        expect(board.king(:white).color).to eq :white        
+      end
+
+      it "is can refer to the black king after set_up" do
+        board = Board.new()
+        board.set_up
+        expect(board.king(:black).special_move).to eq :king_castle
+        expect(board.king(:black).color).to eq :black
       end
 
     end
 
-    context "#black_king" do
-      it "initially is nil" do
+
+    context "#get_king_location" do
+      it "is initially nil" do
         board = Board.new()
-        expect(board.black_king).to eq nil
+        expect(board.get_king_location(:white)).to eq nil
       end
 
-      it "is set to the black king after set_up" do
+      it "can access the white king's location after set_up" do
         board = Board.new()
         board.set_up
-        expect(board.black_king.special_move).to eq :king_castle
+        expect(board.get_king_location(:white)).to eq [4,0]
+      end
+
+      it "can access the black king's location after set_up" do
+        board = Board.new()
+        board.set_up
+        expect(board.get_king_location(:black)).to eq [4,7]
       end
 
     end    
+
+    context "#set_king_location=" do
+
+
+      it "can change the white king's location" do
+        board = Board.new()
+        board.set_king_location(:white,[4,1])
+        expect(board.get_king_location(:white)).to eq [4,1]
+      end
+
+      it "can change the black king's location" do
+        board = Board.new()
+        board.set_up
+        board.set_king_location(:black,[4,6])
+        expect(board.get_king_location(:black)).to eq [4,6]
+      end
+    end 
+
 
     context "#closest_root_can_castle?" do
 
