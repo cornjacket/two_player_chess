@@ -31,21 +31,23 @@ module TwoPlayerChess
     def play
       puts "#{current_player.name} has randomly been selected as the first player"
       while true
-        board.formatted_grid
-        puts ""
-        puts solicit_move
-        from_x = get_move.to_i
-        puts solicit_move
-        from_y = get_move.to_i
-        puts solicit_move
-        to_x = get_move.to_i
-        puts solicit_move
-        to_y = get_move.to_i
-        puts "from (#{from_x},#{from_y}) => (#{to_x},#{to_y})"
+        begin
+          board.formatted_grid
+          puts ""
+          puts solicit_move
+          from_x = get_move.to_i
+          puts solicit_move
+          from_y = get_move.to_i
+          puts solicit_move
+          to_x = get_move.to_i
+          puts solicit_move
+          to_y = get_move.to_i
+          puts "from (#{from_x},#{from_y}) => (#{to_x},#{to_y})"
 
-        valid_move = board.valid_move?(current_player.color,from_x, from_y, to_x, to_y)
-        puts "valid_move = #{valid_move}"
-        board.move_piece(from_x, from_y, to_x, to_y) if valid_move != false
+          valid_move = board.valid_move?(current_player.color,from_x, from_y, to_x, to_y)
+          puts "valid_move = #{valid_move}"
+        end until valid_move != false
+        board.move_piece(from_x, from_y, to_x, to_y) #if valid_move != false
 
         if board.game_over
           puts game_over_message
