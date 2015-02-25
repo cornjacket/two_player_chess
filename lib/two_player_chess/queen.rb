@@ -1,4 +1,4 @@
-#lib/two_player_chess/piece.rb
+#lib/two_player_chess/queen.rb
 module TwoPlayerChess
 
 
@@ -14,13 +14,75 @@ module TwoPlayerChess
       "Q"
     end
 
-    def captures(col, row)
-      moves(col, row)
+    def captures(col, row, board)
+      moves(col, row, board)
     end
 
     # Maybe this code should be refactored with Rook and Bishop and placed inside
     # Piece so that it is common code instead copied in multiple places
-    def moves(col, row)
+    def moves(col, row, board)
+      valid_moves = []     
+      # need to start off @ col,row and then move outwards in 4 legal directions
+      7.times do |i|
+        x = col+i+1
+        y = row+i+1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end
+      7.times do |i|
+        x = col-i-1
+        y = row+i+1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end
+      7.times do |i|
+        x = col+i+1
+        y = row-i-1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end
+      7.times do |i|
+        x = col-i-1
+        y = row-i-1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end     
+
+      # need to start off @ col,row and then move outwards in 4 legal directions
+       7.times do |i|
+        x = col
+        y = row+i+1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end
+      7.times do |i|
+        x = col-i-1
+        y = row
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end
+      7.times do |i|
+        x = col+i+1
+        y = row
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end
+      7.times do |i|
+        x = col
+        y = row-i-1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end 
+      valid_moves      
+=begin      
       location = [col,row]
       valid_moves = []     
       # first find positive diagonal moves
@@ -62,7 +124,8 @@ module TwoPlayerChess
         #break if !on_board(new_move) # later can be used to stop movement
         valid_moves << new_move if new_move != location
       end
-      valid_moves
+
+=end      
     end
 
 

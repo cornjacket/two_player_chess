@@ -14,43 +14,45 @@ module TwoPlayerChess
       "B"
     end
 
-    def captures(col, row)
-      moves(col, row)
+    def captures(col, row, board)
+      moves(col, row, board)
     end
 
-# there is a bug in this movement
-    def moves(col, row)
-      location = [col,row]
+
+    def moves(col, row, board)
       valid_moves = []     
-      # first find positive diagonal moves
-      if col < row
-        start_col = col-col
-        start_row = row-col
-      else
-        start_col = col-row
-        start_row = row-row
+      # need to start off @ col,row and then move outwards in 4 legal directions
+      7.times do |i|
+        x = col+i+1
+        y = row+i+1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
       end
-      8.times do |i|
-        new_move = [start_col+i, start_row+i]
-        break if !on_board(new_move)
-        valid_moves << new_move if new_move != location
+      7.times do |i|
+        x = col-i-1
+        y = row+i+1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
       end
-      # next find negative diagonal moves
-      if col < row
-        neg_start_col = col - col
-        neg_start_row = row + col
-      else
-        diff = 7 - row
-        neg_start_col = col - diff
-        neg_start_row = row + diff
+      7.times do |i|
+        x = col+i+1
+        y = row-i-1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
       end
-      8.times do |i|
-        new_move = [neg_start_col+i, neg_start_row-i]
-        break if !on_board(new_move)
-        valid_moves << new_move if new_move != location
-      end
+      7.times do |i|
+        x = col-i-1
+        y = row-i-1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end            
       valid_moves
     end
+
 
   end
 

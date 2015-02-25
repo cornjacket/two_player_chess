@@ -61,23 +61,21 @@ end
       # already checked for same color
       if destination != nil
         # capture scenario, now check if valid capture by asking piece TODO
-        puts "Valid captures = #{source.captures(from_x,from_y)}"
-        return :capture if source.captures(from_x,from_y).include?([to_x,to_y])
+        puts "Valid captures = #{source.captures(from_x,from_y,self)}"
+        return :capture if source.captures(from_x,from_y,self).include?([to_x,to_y])
       else
         # move scenario, now check if valid move by asking piece TODO
         # also check for castle
         # also check for pawn first move
-        puts "Valid moves = #{source.moves(from_x, from_y)}"
-        return :move if source.moves(from_x,from_y).include?([to_x,to_y])
+        puts "Valid moves = #{source.moves(from_x,from_y,self)}"
+        return :move if source.moves(from_x,from_y,self).include?([to_x,to_y])
       end
 
       puts "Not a valid move or capture"
       return false
     end
 
-# get_cell and set_sell should be private
-# should have move_piece method
-# whats distinction between game and board in chess?
+
     def move_piece(from_x, from_y, to_x, to_y)      
       piece = get_cell(from_x,from_y).value
       set_cell(to_x,to_y, piece)

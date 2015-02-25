@@ -14,12 +14,12 @@ module TwoPlayerChess
       "N"
     end
 
-    def captures(col, row)
+    def captures(col, row, board=nil)
       moves(col, row)
     end
 
 
-    def moves(col, row)
+    def moves(col, row, board=nil)
       valid_moves = []
       inc =  [ [-1,2], [-2,1], [-2,-1], [-1,-2], [1,-2], [2,-1], [2,1], [1,2] ]
       inc.each do |tuple| 

@@ -17,26 +17,42 @@ module TwoPlayerChess
       "R"
     end
 
-    def captures(col, row)
-      moves(col, row)
+    def captures(col, row, board)
+      moves(col, row, board)
     end
 
 
-    def moves(col, row)
-      location = [col,row]
+    def moves(col, row, board)
       valid_moves = []     
-      # first vertical moves
-      8.times do |i|
-        new_move = [col, i]
-        #break if !on_board(new_move) # later can be used to stop movement
-        valid_moves << new_move if new_move != location
+      # need to start off @ col,row and then move outwards in 4 legal directions
+       7.times do |i|
+        x = col
+        y = row+i+1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
       end
-      # next find horizontal moves
-      8.times do |i|
-        new_move = [i, row]
-        #break if !on_board(new_move) # later can be used to stop movement
-        valid_moves << new_move if new_move != location
+      7.times do |i|
+        x = col-i-1
+        y = row
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
       end
+      7.times do |i|
+        x = col+i+1
+        y = row
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end
+      7.times do |i|
+        x = col
+        y = row-i-1
+        break if !on_board([x,y])
+        valid_moves << [x,y]
+        break if board.get_cell(x,y).value != nil
+      end 
       valid_moves
     end
 

@@ -24,13 +24,6 @@ module TwoPlayerChess
         expect(piece.first_move).to eq true
       end
 
-=begin
-      it "returns false after a call to location=" do
-        piece = Pawn.new(:white, [0,0])
-        piece.location=([0,1])
-        expect(piece.first_move).to eq false
-      end      
-=end
     end # context "#first_move"
 
 
