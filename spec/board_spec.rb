@@ -141,6 +141,86 @@ module TwoPlayerChess
 
     end
 
+
+#closest_rook_can_castle?(color,from_x,from_y,to_x)
+
+
+    context "#closest_root_can_castle?" do
+
+      it "returns true when white king castles on the king side" do 
+        board = Board.new
+        board.set_up
+        board.set_cell(5,0,nil)
+        board.set_cell(6,0,nil)
+        from_x = 4
+        from_y = 0
+        to_x = 4+2
+        expect(board.closest_rook_can_castle?(:white,from_x,from_y,to_x)).to eq true
+      end
+
+      it "returns true when white king castles on the queen side" do 
+        board = Board.new
+        board.set_up
+        board.set_cell(1,0,nil)
+        board.set_cell(2,0,nil)
+        board.set_cell(3,0,nil)
+        from_x = 4
+        from_y = 0
+        to_x = 4-2
+        expect(board.closest_rook_can_castle?(:white,from_x,from_y,to_x)).to eq true
+      end      
+
+
+      it "returns true when black king castles on the king side" do 
+        board = Board.new
+        board.set_up
+        board.set_cell(5,7,nil)
+        board.set_cell(6,7,nil)
+        from_x = 4
+        from_y = 7
+        to_x = 4+2
+        expect(board.closest_rook_can_castle?(:black,from_x,from_y,to_x)).to eq true
+      end
+
+      it "returns true when black king castles on the queen side" do 
+        board = Board.new
+        board.set_up
+        board.set_cell(1,7,nil)
+        board.set_cell(2,7,nil)
+        board.set_cell(3,7,nil)
+        from_x = 4
+        from_y = 7
+        to_x = 4-2
+        expect(board.closest_rook_can_castle?(:black,from_x,from_y,to_x)).to eq true
+      end  
+
+      it "returns false when white king attempts to castle if the rook is not in rook position" do 
+        board = Board.new
+        board.set_up
+        board.set_cell(5,0,nil)
+        board.set_cell(6,0,nil)
+        board.move_piece(7,0,6,0)
+        from_x = 4
+        from_y = 0
+        to_x = 4+2
+        expect(board.closest_rook_can_castle?(:white,from_x,from_y,to_x)).to eq false
+      end
+
+      it "returns false when white king attempts to castle if the rook is in rook position but has previously moved" do 
+        board = Board.new
+        board.set_up
+        board.set_cell(5,0,nil)
+        board.set_cell(6,0,nil)
+        board.move_piece(7,0,6,0)
+        board.move_piece(0,6,0,7)
+        from_x = 4
+        from_y = 0
+        to_x = 4+2
+        expect(board.closest_rook_can_castle?(:white,from_x,from_y,to_x)).to eq false
+      end
+
+    end
+
     TestCell = Struct.new(:value)
     let(:x_cell) { TestCell.new("X") }
     let(:y_cell) { TestCell.new("Y") }
