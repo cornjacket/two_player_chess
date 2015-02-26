@@ -165,10 +165,6 @@ end
       return 3
     end
 
-      # closest rook exists (not nil and special_move == :rook_castle) where it should, match color, first_move is true, 
-      # closest initial rook square to destination has a rook with first_move == true
-      # empty spaces in between source and closest rook position
-
     def empty_squares_between?(from_x,from_y,to_x)
       return_value = true
       start = (from_x < to_x) ? from_x+1 : to_x+1
@@ -206,8 +202,37 @@ end
 
     end
 
-    def in_check(color)
-      
+    # this method will be useful when determining if a move is valid, especially in case
+    # the current player is in check and wants to move a piece to block it. this will be
+    # useful when there is a web interface and the source square is picked independently from
+    # the destination square
+    # not sure how this will work in conjunction with valid_move? yet
+    def valid_source?
+
+    end
+
+    # used in conjunction with valid_source? to determine new valid_move?
+    def valid_destination?
+
+    end
+
+    # definitely need specs for this
+    def in_check?(color)
+      #select king based on color and record king_location
+      king_loc = get_king_location(color)
+      opposite_color = (color == :white) ? :black : :white
+      #go through entire board and look at each piece of opposite color and see if king_location
+      #is included inside of each opponent's capture array
+      8.times do |x|
+        8.times do |y|
+          piece = get_cell(x,y).value
+          # piece != nil, color = opposite_color
+          if piece != nil && piece.color == opposite_color && piece.captures(x,y,self).include?(king_loc)
+            return true
+          end
+        end
+      end
+      false
     end
 
     def game_over

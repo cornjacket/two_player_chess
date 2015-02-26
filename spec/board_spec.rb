@@ -141,6 +141,55 @@ module TwoPlayerChess
 
     end
 
+    context "#in_check?" do
+
+      it "returns false for the initial game board set up" do
+        board = Board.new()
+        board.set_up
+        expect(board.in_check?(:white)).to eq false     
+      end
+
+      it "returns true when the white king is under attack by a black rook" do
+        board = Board.new()
+        x = 4
+        y = 0
+        board.set_cell(x,y, King.new(:white))
+        board.set_king_location(:white, [x,y])
+        board.set_cell(4,7, Rook.new(:black))       
+        expect(board.in_check?(:white)).to eq true
+      end
+
+      it "returns true when the black king is under attack by a white rook" do
+        board = Board.new()
+        x = 4
+        y = 7
+        board.set_cell(x,y, King.new(:black))
+        board.set_king_location(:black, [x,y])
+        board.set_cell(4,0, Rook.new(:white))       
+        expect(board.in_check?(:black)).to eq true
+      end      
+
+      it "returns false when the white king is in the attack path of the white rook" do
+        board = Board.new()
+        x = 4
+        y = 0
+        board.set_cell(x,y, King.new(:white))
+        board.set_king_location(:white, [x,y])
+        board.set_cell(4,7, Rook.new(:white))       
+        expect(board.in_check?(:white)).to eq false
+      end      
+
+      it "returns true when the white king is under attack by a black pawn" do
+        board = Board.new()
+        x = 4
+        y = 0
+        board.set_cell(x,y, King.new(:white))
+        board.set_king_location(:white, [x,y])
+        board.set_cell(5,1, Pawn.new(:black))       
+        expect(board.in_check?(:white)).to eq true
+      end      
+
+    end      
 
     context "#king" do
       it "is initially nil" do
@@ -148,14 +197,14 @@ module TwoPlayerChess
         expect(board.king(:white)).to eq nil
       end
 
-      it "is can refer to the white king after set_up" do
+      it "can refer to the white king after set_up" do
         board = Board.new()
         board.set_up
         expect(board.king(:white).special_move).to eq :king_castle
         expect(board.king(:white).color).to eq :white        
       end
 
-      it "is can refer to the black king after set_up" do
+      it "can refer to the black king after set_up" do
         board = Board.new()
         board.set_up
         expect(board.king(:black).special_move).to eq :king_castle
@@ -166,6 +215,7 @@ module TwoPlayerChess
 
 
     context "#get_king_location" do
+
       it "is initially nil" do
         board = Board.new()
         expect(board.get_king_location(:white)).to eq nil
@@ -185,8 +235,8 @@ module TwoPlayerChess
 
     end    
 
-    context "#set_king_location=" do
 
+    context "#set_king_location=" do
 
       it "can change the white king's location" do
         board = Board.new()
