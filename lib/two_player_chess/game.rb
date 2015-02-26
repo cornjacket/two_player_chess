@@ -47,15 +47,17 @@ module TwoPlayerChess
           valid_move = board.valid_move?(current_player.color,from_x, from_y, to_x, to_y)
           puts "valid_move = #{valid_move}"
         end until valid_move != false
-        board.move_piece(from_x, from_y, to_x, to_y) #if valid_move != false
-
+        board.move_piece(from_x, from_y, to_x, to_y) #if valid_move != false        
+        if valid_move == :castle
+          board.castle_rook(current_player.color,from_x,from_y,to_x)
+        end
         if board.game_over
           puts game_over_message
           board.formatted_grid
-          return
-        else
-          switch_players
-        end
+       #   return
+       #else
+       #  switch_players
+         end
       end      
     end
 

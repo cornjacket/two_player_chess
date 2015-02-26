@@ -6,6 +6,11 @@ module TwoPlayerChess
     attr_accessor :white_king, :black_king
     attr_accessor :white_king_loc, :black_king_loc
 
+    def abs(a)
+      return -a if a < 0
+      a
+    end
+
   	def initialize(input = {})
       @max_row = 8 # these could be changeable
       @max_col = 8 # these could be changeable      
@@ -92,8 +97,10 @@ end
       # check if move may cause an en_passe in opponent's next move
 
       # check if move is an en_passe
-=begin
+
       # check if castle
+
+# DEBUGGING
       if source.special_move == :king_castle && source.first_move == true
         puts "castle 1"
         if from_y == to_y && abs(from_x-to_x) == 2 # destination is 2 spaces to the horizonal of the source
@@ -103,7 +110,6 @@ end
          
         end
       end
-=end
       # closest rook exists (not nil and special_move == :rook_castle) where it should, match color, first_move is true, 
       # closest initial rook square to destination has a rook with first_move == true
       # empty spaces in between source and closest rook position
@@ -130,17 +136,35 @@ end
       return false
     end
 
-# need tests for this
-    def closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if 
+    def closest_rook_coord(color,from_x,from_y,to_x)
       rook_x = (to_x > 4) ? 7 : 0
       rook_y = from_y
+      [rook_x,rook_y]
+    end
+
+# need tests for this
+    def closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if 
+      rook_x, rook_y = closest_rook_coord(color,from_x,from_y,to_x) 
       rook = get_cell(rook_x,rook_y).value
       if rook != nil && rook.special_move == :rook_castle && rook.first_move == true && rook.color == color && empty_squares_between?(from_x, from_y, rook_x) 
         return true
       end
       false
     end
-    
+  
+  # need tests for this
+    def castle_rook(color,from_x,from_y,to_x)
+      rook_x,rook_y = closest_rook_coord(color,from_x,from_y,to_x)
+      puts "Rook is @ (#{rook_x},#{rook_y})"
+      move_piece(rook_x,rook_y, rook_dest_x(rook_x) ,rook_y)
+    end
+
+    # returns the destination x coord for the rook that is going to castle
+    def rook_dest_x(x)
+      return 5 if x == 7
+      return 3
+    end
+
       # closest rook exists (not nil and special_move == :rook_castle) where it should, match color, first_move is true, 
       # closest initial rook square to destination has a rook with first_move == true
       # empty spaces in between source and closest rook position
