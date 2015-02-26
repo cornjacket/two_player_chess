@@ -32,14 +32,12 @@ module TwoPlayerChess
         board.set_cell(3,6,nil)
         #move black bishop to attacking the white queen
         board.move_piece(2,7,6,3)
-        puts
-        board.formatted_grid
         #does moving the white king in front of the queen create a check
         expect(board.move_creates_check?(:white,4,0,4,1)).to eq true
       end
 
     end 
-=begin
+
     context "#deep_copy" do
       it "copies a board with the same values" do
         board = Board.new
@@ -447,6 +445,6 @@ module TwoPlayerChess
 
 
     end # context #game_over
-=end
+
   end
 end

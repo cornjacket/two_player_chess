@@ -167,7 +167,6 @@ end
       copy.move_piece(from_x, from_y, to_x, to_y)  
       copy.castle_rook(color,from_x,from_y, to_x) if castle
       puts "Inside move_creates_check?"
-      copy.formatted_grid
       puts
       copy.in_check?(color)
     end
@@ -249,17 +248,13 @@ end
 
     # definitely need specs for this
     def in_check?(color)
-      #select king based on color and record king_location
       king_loc = get_king_location(color)
-      puts "#{color} King is at #{king_loc}"
       opposite_color = (color == :white) ? :black : :white
       #go through entire board and look at each piece of opposite color and see if king_location
       #is included inside of each opponent's capture array
       8.times do |x|
         8.times do |y|
           piece = get_cell(x,y).value
-          # piece != nil, color = opposite_color
-          puts "Possible capture at cell[#{x},#{y}] = #{piece.captures(x,y,self)}" if x==6 && y==3
           if piece != nil && piece.color == opposite_color && piece.captures(x,y,self).include?(king_loc)
             return true
           end
