@@ -214,6 +214,9 @@ end
 
     def move_piece(from_x, from_y, to_x, to_y)      
       piece = get_cell(from_x,from_y).value
+      color = piece.color
+      # check if king_loc(color) = source location, and adjust king_loc accordingly
+      set_king_location(color, [to_x,to_y]) if get_king_location(color) == [from_x,from_y]
       piece.first_move = false if piece.special_move != false
       set_cell(to_x,to_y, piece)
       set_cell(from_x,from_y, nil)
