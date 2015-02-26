@@ -21,6 +21,8 @@ module TwoPlayerChess
     # lasting effect (first_move set to false). so we need a deep copy of all the pieces.
     # deep_copy will create a copy of a Board after a game has been started.
     # copying a board using deep copy prior to Board#set_up may/will result in an error
+    # deep_copy will be used to determine if there are any possible piece configurations that are possible if the
+    # player is under check, it should also help determine whether there is a check mate.
     def deep_copy
       copy = Board.new
       8.times do |x|
@@ -126,7 +128,7 @@ end
 # DEBUGGING
       if source.special_move == :king_castle && source.first_move == true
         puts "castle 1"
-        if from_y == to_y && abs(from_x-to_x) == 2 # destination is 2 spaces to the horizonal of the source
+        if from_y == to_y && abs(from_x-to_x) == 2 && !in_check?(color) # && destination won't put me in check # destination is 2 spaces to the horizonal of the source
           puts "castle 2"
 # later add for escaping check or going into check
           return :castle if closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if 
@@ -159,13 +161,23 @@ end
       return false
     end
 
+    # NEED TO TEST
+    def move_creates_check?(color, from_x, from_y, to_x, to_y, castle=false)
+      copy = self.deep_copy
+      copy.move_piece(from_x, from_y, to_x, to_y)  
+      copy.castle_rook(color,from_x,from_y, to_x) if castle
+      puts "Inside move_creates_check?"
+      copy.formatted_grid
+      puts
+      copy.in_check?(color)
+    end
+
     def closest_rook_coord(color,from_x,from_y,to_x)
       rook_x = (to_x > 4) ? 7 : 0
       rook_y = from_y
       [rook_x,rook_y]
     end
 
-# need tests for this
     def closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if 
       rook_x, rook_y = closest_rook_coord(color,from_x,from_y,to_x) 
       rook = get_cell(rook_x,rook_y).value
@@ -188,6 +200,7 @@ end
       return 3
     end
 
+    # helper method for castling
     def empty_squares_between?(from_x,from_y,to_x)
       return_value = true
       start = (from_x < to_x) ? from_x+1 : to_x+1
@@ -210,7 +223,7 @@ end
       return grid[y][x]
     end
 
-    # set_cell is used to init the board with pieces along with as a helper function to move and
+    # set_cell is used to init the board with pieces and as a helper function to move and
     # and clear pieces on the board
     def set_cell(x, y, value)
       cell = get_cell(x, y)
@@ -235,6 +248,7 @@ end
     def in_check?(color)
       #select king based on color and record king_location
       king_loc = get_king_location(color)
+      puts "#{color} King is at #{king_loc}"
       opposite_color = (color == :white) ? :black : :white
       #go through entire board and look at each piece of opposite color and see if king_location
       #is included inside of each opponent's capture array
@@ -242,6 +256,7 @@ end
         8.times do |y|
           piece = get_cell(x,y).value
           # piece != nil, color = opposite_color
+          puts "Possible capture at cell[#{x},#{y}] = #{piece.captures(x,y,self)}" if x==6 && y==3
           if piece != nil && piece.color == opposite_color && piece.captures(x,y,self).include?(king_loc)
             return true
           end

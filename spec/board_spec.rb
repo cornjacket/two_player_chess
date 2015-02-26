@@ -20,7 +20,26 @@ module TwoPlayerChess
       end
     end
 
+    context "#move_creates_check?" do
 
+# set up looks look but not getting back right value - dbug method
+      it "returns true if the king gets in the attack path of the bishop" do
+        board = Board.new()
+        board.set_up        
+        #remove white kings pawn
+        board.set_cell(4,1,nil)
+        #remove black queens pawn to open up path for bishop
+        board.set_cell(3,6,nil)
+        #move black bishop to attacking the white queen
+        board.move_piece(2,7,6,3)
+        puts
+        board.formatted_grid
+        #does moving the white king in front of the queen create a check
+        expect(board.move_creates_check?(:white,4,0,4,1)).to eq true
+      end
+
+    end 
+=begin
     context "#deep_copy" do
       it "copies a board with the same values" do
         board = Board.new
@@ -289,8 +308,7 @@ module TwoPlayerChess
 
     end    
 
-
-    context "#set_king_location=" do
+    context "#set_king_location" do
 
       it "can change the white king's location" do
         board = Board.new()
@@ -305,6 +323,9 @@ module TwoPlayerChess
         expect(board.get_king_location(:black)).to eq [4,6]
       end
     end 
+
+
+
 
 
     context "#closest_root_can_castle?" do
@@ -331,7 +352,6 @@ module TwoPlayerChess
         to_x = 4-2
         expect(board.closest_rook_can_castle?(:white,from_x,from_y,to_x)).to eq true
       end      
-
 
       it "returns true when black king castles on the king side" do 
         board = Board.new
@@ -425,58 +445,8 @@ module TwoPlayerChess
         expect(board.game_over).to be_falsy
       end      
 
-=begin
-      it "returns :winner when row has objects with values that are the same" do
-        grid = [
-        [x_cell, x_cell, x_cell],
-        [y_cell, x_cell, y_cell],
-        [y_cell, y_cell, empty]
-        ]
-        board = Board.new(grid: grid)
-        expect(board.game_over).to eq :winner
-      end
 
-      it "returns :winner when column has objects with values that are the same" do
-        grid = [
-        [x_cell, x_cell, empty],
-        [y_cell, x_cell, y_cell],
-        [y_cell, x_cell, empty]
-        ]
-        board = Board.new(grid: grid)
-        expect(board.game_over).to eq :winner
-      end
-
-      it "returns :winner when diagonal has objects with values that are the same" do
-        grid = [
-        [x_cell, empty, empty],
-        [y_cell, x_cell, y_cell],
-        [y_cell, x_cell, x_cell]
-        ]
-        board = Board.new(grid: grid)
-        expect(board.game_over).to eq :winner
-      end
-
-      it "returns :draw when all spaces on the board are taken" do
-        grid = [
-        [x_cell, y_cell, x_cell],
-        [y_cell, x_cell, y_cell],
-        [y_cell, x_cell, y_cell]
-        ]
-        board = Board.new(grid: grid)
-        expect(board.game_over).to eq :draw
-      end
-
-      it "returns falsy when there is no winner or draw" do
-        grid = [
-        [x_cell, empty, empty],
-        [y_cell, empty, empty],
-        [y_cell, empty, empty]
-        ]
-        board = Board.new(grid: grid)
-        expect(board.game_over).to be_falsy
-      end
-=end
     end # context #game_over
-
+=end
   end
 end

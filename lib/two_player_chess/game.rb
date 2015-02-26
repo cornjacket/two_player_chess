@@ -54,9 +54,9 @@ module TwoPlayerChess
         if board.game_over
           puts game_over_message
           board.formatted_grid
-       #   return
-       #else
-       #  switch_players
+          return
+       else
+         switch_players
          end
       end      
     end
