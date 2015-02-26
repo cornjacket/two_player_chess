@@ -10,6 +10,11 @@ module TwoPlayerChess
       super(color)
     end
 
+    def copy
+      image = Queen.new(color)
+      image
+    end
+
     def to_s
       "Q"
     end

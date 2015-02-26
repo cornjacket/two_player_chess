@@ -13,6 +13,12 @@ module TwoPlayerChess
       @first_move = true
     end
 
+    def copy
+      image = Rook.new(color)
+      image.first_move = first_move
+      image
+    end
+
     def to_s
       "R"
     end

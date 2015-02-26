@@ -11,6 +11,12 @@ module TwoPlayerChess
       @first_move = true
     end
 
+    def copy
+      image = King.new(color)
+      image.first_move = first_move
+      image
+    end
+
     def to_s
       "K"
     end

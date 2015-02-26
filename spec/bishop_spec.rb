@@ -17,6 +17,17 @@ module TwoPlayerChess
     end # context "#initialize"
 
 
+    context "#copy" do
+
+      it "returns a color of white if the original color is white" do
+        piece = Bishop.new(:white)
+        copy = piece.copy
+        expect(copy.color).to eq :white
+      end
+
+    end # context "#copy"
+
+
     context "#captures" do
 
       it "returns a list of valid positions that can be captured from (3,4)" do

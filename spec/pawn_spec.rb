@@ -17,6 +17,25 @@ module TwoPlayerChess
 
     end # context "#initialize"
 
+
+    context "#copy" do
+
+      it "returns a color of white if the original color is white" do
+        piece = Pawn.new(:white)
+        copy = piece.copy
+        expect(copy.color).to eq :white
+      end
+
+      it "returns a first_move of false if the original first_move is false" do
+        piece = Pawn.new(:white)
+        piece.first_move = false
+        copy = piece.copy
+        expect(copy.first_move).to eq false
+      end
+
+    end # context "#copy"
+
+
     context "#first_move" do
 
       it "is initially set to true" do

@@ -21,6 +21,60 @@ module TwoPlayerChess
     end
 
 
+    context "#deep_copy" do
+      it "copies a board with the same values" do
+        board = Board.new
+        board.set_up
+        copy = board.deep_copy
+
+        expect(copy.white_king_loc).to eq board.white_king_loc
+        expect(copy.black_king_loc).to eq board.black_king_loc        
+        expect(copy.white_king).to_not eq board.white_king
+        expect(copy.black_king).to_not eq board.black_king
+        expect(copy.white_king.first_move).to eq board.white_king.first_move        
+        expect(copy.black_king.first_move).to eq board.black_king.first_move
+        x = copy.white_king_loc[0]
+        y = copy.white_king_loc[1]
+        expect(copy.white_king).to eq copy.get_cell(x,y).value
+        x = copy.black_king_loc[0]
+        y = copy.black_king_loc[1]
+        expect(copy.black_king).to eq copy.get_cell(x,y).value
+        8.times do |x|
+          y = 0  
+          old_piece = board.get_cell(x,y).value
+          new_piece = copy.get_cell(x,y).value
+          expect(old_piece.to_s).to eq new_piece.to_s
+          expect(old_piece.first_move).to eq new_piece.first_move if old_piece.special_move
+          expect(old_piece).to_not eq new_piece
+        end
+        8.times do |x|
+          y = 1  
+          old_piece = board.get_cell(x,y).value
+          new_piece = copy.get_cell(x,y).value
+          expect(old_piece.to_s).to eq new_piece.to_s
+          expect(old_piece.first_move).to eq new_piece.first_move if old_piece.special_move
+          expect(old_piece).to_not eq new_piece
+        end
+        8.times do |x|
+          y = 6  
+          old_piece = board.get_cell(x,y).value
+          new_piece = copy.get_cell(x,y).value
+          expect(old_piece.to_s).to eq new_piece.to_s
+          expect(old_piece.first_move).to eq new_piece.first_move if old_piece.special_move
+          expect(old_piece).to_not eq new_piece
+        end
+        8.times do |x|
+          y = 7  
+          old_piece = board.get_cell(x,y).value
+          new_piece = copy.get_cell(x,y).value
+          expect(old_piece.to_s).to eq new_piece.to_s
+          expect(old_piece.first_move).to eq new_piece.first_move if old_piece.special_move
+          expect(old_piece).to_not eq new_piece
+        end        
+
+      end
+    end
+
     context "#valid_move?" do
       it "returns false when player tries to move an empty square" do
         board = Board.new

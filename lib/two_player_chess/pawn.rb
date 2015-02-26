@@ -11,6 +11,12 @@ module TwoPlayerChess
       @first_move = true
     end
 
+    def copy
+      image = Pawn.new(color)
+      image.first_move = first_move
+      image
+    end
+
     def to_s
       "P"
     end

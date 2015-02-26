@@ -17,6 +17,29 @@ module TwoPlayerChess
   	  @grid = input.fetch(:grid, default_grid)  
   	end
 
+    # shallow copy can not be used because, any piece movement in copied grid array (ie. Castle,Pawn movement) will have
+    # lasting effect (first_move set to false). so we need a deep copy of all the pieces.
+    # deep_copy will create a copy of a Board after a game has been started.
+    # copying a board using deep copy prior to Board#set_up may/will result in an error
+    def deep_copy
+      copy = Board.new
+      8.times do |x|
+        8.times do |y|
+          cell = get_cell(x,y).value
+          if cell == nil
+            copy.set_cell(x,y,nil)
+          else
+            copy.set_cell(x,y,cell.copy)
+          end
+        end
+      end
+      copy.white_king_loc = white_king_loc
+      copy.black_king_loc = black_king_loc
+      copy.white_king = copy.get_cell(white_king_loc[0],white_king_loc[1]).value
+      copy.black_king = copy.get_cell(black_king_loc[0],black_king_loc[1]).value
+      copy      
+    end
+
     def king(color)
       return self.white_king if color == :white
       self.black_king
@@ -42,25 +65,25 @@ module TwoPlayerChess
       self.white_king = King.new(:white)
       self.black_king = King.new(:black)
       8.times do |i|
-        set_cell(i,1, Pawn.new(:white), {:first_move => true} )
-        set_cell(i,6, Pawn.new(:black), {:first_move => true} )
+        set_cell(i,1, Pawn.new(:white))
+        set_cell(i,6, Pawn.new(:black))
       end    
-      set_cell(0,0, Rook.new(:white), {:first_move => true} )
+      set_cell(0,0, Rook.new(:white))
       set_cell(1,0, Knight.new(:white))
       set_cell(2,0, Bishop.new(:white))
       set_cell(3,0, Queen.new(:white))
-      set_cell(white_king_loc[0],white_king_loc[1], white_king, {:first_move => true} )
+      set_cell(white_king_loc[0],white_king_loc[1], white_king)
       set_cell(5,0, Bishop.new(:white))
       set_cell(6,0, Knight.new(:white))
-      set_cell(7,0, Rook.new(:white), {:first_move => true} )
-      set_cell(0,7, Rook.new(:black), {:first_move => true} )
+      set_cell(7,0, Rook.new(:white))
+      set_cell(0,7, Rook.new(:black))
       set_cell(1,7, Knight.new(:black))
       set_cell(2,7, Bishop.new(:black))
       set_cell(3,7, Queen.new(:black))
-      set_cell(black_king_loc[0],black_king_loc[1], black_king, {:first_move => true} )
+      set_cell(black_king_loc[0],black_king_loc[1], black_king)
       set_cell(5,7, Bishop.new(:black))
       set_cell(6,7, Knight.new(:black))
-      set_cell(7,7, Rook.new(:black), {:first_move => true} )
+      set_cell(7,7, Rook.new(:black))
     end
 
 # returns :move if it is a valid move
@@ -178,6 +201,7 @@ end
 
     def move_piece(from_x, from_y, to_x, to_y)      
       piece = get_cell(from_x,from_y).value
+      piece.first_move = false if piece.special_move != false
       set_cell(to_x,to_y, piece)
       set_cell(from_x,from_y, nil)
     end
@@ -188,18 +212,9 @@ end
 
     # set_cell is used to init the board with pieces along with as a helper function to move and
     # and clear pieces on the board
-    def set_cell(x, y, value, input = {})
-      set_first_move = input.fetch(:first_move, false)
+    def set_cell(x, y, value)
       cell = get_cell(x, y)
       cell.value = value
-      if value != nil && cell.value.special_move != false
-        if set_first_move == true
-          cell.value.first_move = true
-        else
-          cell.value.first_move = false
-        end
-      end
-
     end
 
     # this method will be useful when determining if a move is valid, especially in case

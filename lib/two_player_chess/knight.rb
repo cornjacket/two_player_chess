@@ -10,6 +10,11 @@ module TwoPlayerChess
       super(color)
     end
 
+    def copy
+      image = Knight.new(color)
+      image
+    end
+
     def to_s
       "N"
     end
