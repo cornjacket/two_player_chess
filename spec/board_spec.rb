@@ -20,9 +20,63 @@ module TwoPlayerChess
       end
     end
 
+
+    context "#valid_move?" do
+
+      it "returns true if the king attempts to castle" do
+        board = Board.new()
+        board.set_up        
+        #move white kings pawn to open up attack lane
+        board.move_piece(4,1,4,3)
+        #move white knight out
+        board.move_piece(6,0,7,2)
+        #move white bishop out opening up castling lane
+        board.move_piece(5,0,1,4)     
+        #does moving the white king to kill the black queen remove the check - expect
+        expect(board.valid_move?(:white,4,0,6,0)).to eq :castle
+      end
+
+      it "returns :capture if the king tries to capture the queen when the king is in check by the queen" do
+        board = Board.new()
+        board.set_up        
+        #remove white kings pawn
+        board.move_piece(4,1,4,3)
+        #board.set_cell(4,1,nil)
+        #remove black kings pawn to open up path for bishop
+        board.move_piece(4,6,4,4)        
+        #board.set_cell(4,6,nil)
+        #move black queen to attacking the white queen
+        board.move_piece(3,7,6,4)
+        #move black queen to attacking the white king
+        board.move_piece(6,4,3,1)        
+        #does moving the white king to kill the black queen remove the check - expect
+        expect(board.valid_move?(:white,4,0,3,1)).to eq :capture
+      end
+
+      it "returns false if the king attempts to castle while in check" do
+        board = Board.new()
+        board.set_up        
+        #move white kings pawn to open up attack lane
+        board.move_piece(4,1,4,3)
+        #move black kings pawn to open up path for bishop
+        board.move_piece(4,6,4,4)        
+        #move black queen to position attacking the white queen
+        board.move_piece(3,7,6,4)
+        #move white knight out
+        board.move_piece(6,0,7,2)
+        #move white bishop out opening up castling lane
+        board.move_piece(5,0,1,4)
+        #move black queen to attacking the white king
+        board.move_piece(6,4,3,1)        
+        #does moving the white king to kill the black queen remove the check - expect
+        expect(board.valid_move?(:white,4,0,6,0)).to eq false
+      end
+
+
+    end
+#=begin
     context "#move_creates_check?" do
 
-# set up looks look but not getting back right value - dbug method
       it "returns true if the king gets in the attack path of the bishop" do
         board = Board.new()
         board.set_up        
@@ -32,9 +86,11 @@ module TwoPlayerChess
         board.set_cell(3,6,nil)
         #move black bishop to attacking the white queen
         board.move_piece(2,7,6,3)
-        #does moving the white king in front of the queen create a check
+        #does moving the white king in front of his queen create a check
         expect(board.move_creates_check?(:white,4,0,4,1)).to eq true
       end
+
+      # need a test for the castle scenario/check
 
     end 
 
@@ -98,6 +154,7 @@ module TwoPlayerChess
         expect(board.valid_move?(:white,0,0,0,1)).to eq false
       end
 
+# set_cell is not the prefered way to make specs. use move_piece whenever it is not a huge burden to do so.
       it "returns false when player tries to move an opponent's piece" do
         pawn = Pawn.new(:white) 
         board = Board.new
@@ -115,19 +172,18 @@ module TwoPlayerChess
       end
 
       it "returns :capture when player tries to capture an opposing piece" do
-        pawn = Pawn.new(:white) 
-        bishop = Bishop.new(:black)
         board = Board.new
-        board.set_cell(0,1,pawn)
-        board.set_cell(1,2,bishop)
-        expect(board.valid_move?(:white,0,1,1,2)).to eq :capture
+        board.set_up
+        board.move_piece(3,1,3,3)
+        board.move_piece(4,6,4,4)
+        expect(board.valid_move?(:white,3,3,4,4)).to eq :capture
       end
 
       it "returns :move when player tries to make a valid move" do
         pawn = Pawn.new(:white) 
         board = Board.new
-        board.set_cell(0,0,pawn)
-        expect(board.valid_move?(:white,0,0,0,1)).to eq :move
+        board.set_up
+        expect(board.valid_move?(:white,0,1,0,2)).to eq :move
       end
 
 ## TODO - add tests for pieces blocking other pieces to make sure
@@ -443,8 +499,8 @@ module TwoPlayerChess
         expect(board.game_over).to be_falsy
       end      
 
-
     end # context #game_over
+#=end
 
   end
 end

@@ -124,15 +124,11 @@ end
       # check if move is an en_passe
 
       # check if castle
-
-# DEBUGGING
       if source.special_move == :king_castle && source.first_move == true
-        puts "castle 1"
-        if from_y == to_y && abs(from_x-to_x) == 2 && !in_check?(color) # && destination won't put me in check # destination is 2 spaces to the horizonal of the source
-          puts "castle 2"
-# later add for escaping check or going into check
-          return :castle if closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if 
-         
+        if from_y == to_y && abs(from_x-to_x) == 2 && !in_check?(color)
+          if closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if          
+            return :castle if !move_creates_check?(color,from_x,from_y,to_x,to_y,true)
+          end
         end
       end
       # closest rook exists (not nil and special_move == :rook_castle) where it should, match color, first_move is true, 
@@ -148,13 +144,26 @@ end
       if destination != nil
         # capture scenario, now check if valid capture by asking piece TODO
         puts "Valid captures = #{source.captures(from_x,from_y,self)}"
-        return :capture if source.captures(from_x,from_y,self).include?([to_x,to_y])
+        if source.captures(from_x,from_y,self).include?([to_x,to_y])
+          if move_creates_check?(color,from_x,from_y,to_x,to_y)
+            return false
+          else 
+            return :capture
+          end
+        end
       else
         # move scenario, now check if valid move by asking piece TODO
         # also check for castle
         # also check for pawn first move
         puts "Valid moves = #{source.moves(from_x,from_y,self)}"
-        return :move if source.moves(from_x,from_y,self).include?([to_x,to_y])
+        #return :move if source.moves(from_x,from_y,self).include?([to_x,to_y])
+        if source.moves(from_x,from_y,self).include?([to_x,to_y])
+          if move_creates_check?(color,from_x,from_y,to_x,to_y)
+            return false
+          else 
+            return :move
+          end
+        end        
       end
 
       puts "Not a valid move or capture"
@@ -166,8 +175,6 @@ end
       copy = self.deep_copy
       copy.move_piece(from_x, from_y, to_x, to_y)  
       copy.castle_rook(color,from_x,from_y, to_x) if castle
-      puts "Inside move_creates_check?"
-      puts
       copy.in_check?(color)
     end
 

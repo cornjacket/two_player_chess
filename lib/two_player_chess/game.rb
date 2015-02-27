@@ -34,6 +34,7 @@ module TwoPlayerChess
         begin
           board.formatted_grid
           puts ""
+          puts "#{current_player.color} is in check" if board.in_check?(current_player.color)
           puts solicit_move
           from_x = get_move.to_i
           puts solicit_move
