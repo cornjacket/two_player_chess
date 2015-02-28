@@ -21,6 +21,40 @@ module TwoPlayerChess
     end
 
 
+    context "#check_mate?" do
+
+      it "returns true for checkmate" do
+        board = Board.new()
+        board.set_up_kings(4,0,4,7)
+
+        board.set_cell(7,0, Rook.new(:white))
+        board.set_cell(0,0, Rook.new(:white))
+        #puts
+        #board.formatted_grid
+        board.move_piece(7,0,7,6)
+        #puts
+        #board.formatted_grid
+        board.move_piece(0,0,0,7)
+        #puts
+        #board.formatted_grid
+        #puts "in_check? = #{board.in_check?(:black)}"
+        expect(board.check_mate?(:black)).to eq true
+      end
+
+      it "returns true for checkmate" do
+        board = Board.new()
+        board.set_up        
+        board.move_piece(4,1,4,3)
+        board.move_piece(5,0,2,3)
+        board.move_piece(3,0,5,2)
+        board.move_piece(5,2,5,6)
+        #puts
+        #board.formatted_grid
+        expect(board.check_mate?(:black)).to eq true
+      end
+
+    end
+
     context "#valid_move?" do
 
       it "returns true if the king attempts to castle" do
@@ -68,13 +102,32 @@ module TwoPlayerChess
         board.move_piece(5,0,1,4)
         #move black queen to attacking the white king
         board.move_piece(6,4,3,1)        
-        #does moving the white king to kill the black queen remove the check - expect
+        # attempt to castle away from check
         expect(board.valid_move?(:white,4,0,6,0)).to eq false
       end
 
+      # need a test for the castle scenario/check
+      it "returns false if the king attempts to castle into check" do
+        board = Board.new()
+        board.set_up        
+        #move white kings pawn to open up attack lane
+        board.move_piece(4,1,4,3)
+        #move black kings pawn to open up path for bishop
+        board.move_piece(4,6,4,4)        
+        #move black queen to position attacking the white pawn
+        board.move_piece(3,7,6,4)
+        #move white knight out
+        board.move_piece(6,0,7,2)
+        #black queen captures white pawn, this should prevent a castle
+        board.move_piece(6,4,6,1)
+        #move white bishop out opening up castling lane
+        board.move_piece(5,0,1,4)             
+        #attempt to castle into check
+        expect(board.valid_move?(:white,4,0,6,0)).to eq false
+      end
 
     end
-#=begin
+
     context "#move_creates_check?" do
 
       it "returns true if the king gets in the attack path of the bishop" do
@@ -90,7 +143,7 @@ module TwoPlayerChess
         expect(board.move_creates_check?(:white,4,0,4,1)).to eq true
       end
 
-      # need a test for the castle scenario/check
+
 
     end 
 
@@ -500,7 +553,7 @@ module TwoPlayerChess
       end      
 
     end # context #game_over
-#=end
+
 
   end
 end

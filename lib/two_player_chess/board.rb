@@ -39,7 +39,7 @@ module TwoPlayerChess
       copy.black_king_loc = black_king_loc
       copy.white_king = copy.get_cell(white_king_loc[0],white_king_loc[1]).value
       copy.black_king = copy.get_cell(black_king_loc[0],black_king_loc[1]).value
-      copy      
+      copy     
     end
 
     def king(color)
@@ -60,12 +60,19 @@ module TwoPlayerChess
       end
     end
 
-    def set_up
 
-      self.white_king_loc = [4,0]
-      self.black_king_loc = [4,7]
+    def set_up_kings(white_king_x,white_king_y,black_king_x,black_king_y)
+      self.white_king_loc = [white_king_x,white_king_y]
+      self.black_king_loc = [black_king_x,black_king_y]
       self.white_king = King.new(:white)
       self.black_king = King.new(:black)
+      set_cell(white_king_loc[0],white_king_loc[1], white_king)     
+      set_cell(black_king_loc[0],black_king_loc[1], black_king)       
+    end
+
+    def set_up
+
+      set_up_kings(4,0, 4,7)
       8.times do |i|
         set_cell(i,1, Pawn.new(:white))
         set_cell(i,6, Pawn.new(:black))
@@ -74,7 +81,7 @@ module TwoPlayerChess
       set_cell(1,0, Knight.new(:white))
       set_cell(2,0, Bishop.new(:white))
       set_cell(3,0, Queen.new(:white))
-      set_cell(white_king_loc[0],white_king_loc[1], white_king)
+
       set_cell(5,0, Bishop.new(:white))
       set_cell(6,0, Knight.new(:white))
       set_cell(7,0, Rook.new(:white))
@@ -82,7 +89,7 @@ module TwoPlayerChess
       set_cell(1,7, Knight.new(:black))
       set_cell(2,7, Bishop.new(:black))
       set_cell(3,7, Queen.new(:black))
-      set_cell(black_king_loc[0],black_king_loc[1], black_king)
+
       set_cell(5,7, Bishop.new(:black))
       set_cell(6,7, Knight.new(:black))
       set_cell(7,7, Rook.new(:black))
@@ -170,7 +177,63 @@ end
       return false
     end
 
-    # NEED TO TEST
+=begin
+Need to check for check mate - 
+if player is under check, then check for check mate.
+how,
+for each of the pieces (of the current color) on the board
+    go through the list of captures for that piece (if it's a pawn, also go through the list of moves) and
+    call move_creates_check? for each. Return false at the first false received from move_creates_check? If
+    move_creates_check? never returns false for all the pieces on the board, then return true, there is a
+    checkmate on the board. 
+=end
+=begin
+    def check_mate?(color)
+      8.times do |x|
+        8.times do |y|
+          piece = get_cell(x,y).value
+          if piece != nil && piece.color == color
+            puts "check_mate? color = #{color}"
+            valid_moves = piece.captures(x,y,self)
+            valid_moves = valid_moves + piece.moves(x,y,self) if piece.special_move == :two_step
+            valid_moves.each do |loc|
+              print "check_mate? loc = #{loc[0]},#{loc[1]} "
+              return false if !move_creates_check?(color,x,y,loc[0],loc[1])
+            end # do |loc|
+          end  # if
+        end # do |y|
+      end # do |x|
+      true
+    end # def
+=end
+    def check_mate?(color)
+      8.times do |x|
+        8.times do |y|
+          piece = get_cell(x,y).value
+          if piece != nil && piece.color == color
+            #puts "check_mate? color = #{color}"
+            valid_moves = []
+            piece.captures(x,y,self).each do |loc|
+              valid_moves << loc if valid_move?(color,x,y,loc[0],loc[1])
+            end
+            #valid_moves = piece.captures(x,y,self)
+            #valid_moves = valid_moves + piece.moves(x,y,self) if piece.special_move == :two_step
+            if piece.special_move == :two_step
+              piece.moves(x,y,self).each do |loc|
+                valid_moves << loc if valid_move?(color,x,y,loc[0],loc[1])
+              end
+            end
+            valid_moves.each do |loc|
+              #print "check_mate? loc = #{loc[0]},#{loc[1]} "
+              return false if !move_creates_check?(color,x,y,loc[0],loc[1])
+            end # do |loc|
+          end  # if
+        end # do |y|
+      end # do |x|
+      true
+    end # def
+    # method creates a deep_copy of the current board setup, executes the hypothetical move on the board copy,
+    # and then checks to see if the hypothetical move causes a check.
     def move_creates_check?(color, from_x, from_y, to_x, to_y, castle=false)
       copy = self.deep_copy
       copy.move_piece(from_x, from_y, to_x, to_y)  
@@ -196,7 +259,7 @@ end
   # need tests for this
     def castle_rook(color,from_x,from_y,to_x)
       rook_x,rook_y = closest_rook_coord(color,from_x,from_y,to_x)
-      puts "Rook is @ (#{rook_x},#{rook_y})"
+      #puts "Rook is @ (#{rook_x},#{rook_y})"
       move_piece(rook_x,rook_y, rook_dest_x(rook_x) ,rook_y)
     end
 
@@ -263,10 +326,13 @@ end
         8.times do |y|
           piece = get_cell(x,y).value
           if piece != nil && piece.color == opposite_color && piece.captures(x,y,self).include?(king_loc)
+            #puts "in_check? reports true at #{x},#{y}"
+            #puts piece.captures(x,y,self)
             return true
           end
         end
       end
+      #puts "in_check? reports false"
       false
     end
 
@@ -287,6 +353,7 @@ end
     end
 
     def winner?
+      return false
       return true if !get_cell(0,2).value.nil? # upper left white pawn moves one square
       false
     end

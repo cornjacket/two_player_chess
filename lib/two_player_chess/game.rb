@@ -34,7 +34,9 @@ module TwoPlayerChess
         begin
           board.formatted_grid
           puts ""
-          puts "#{current_player.color} is in check" if board.in_check?(current_player.color)
+          if board.in_check?(current_player.color)
+            puts "#{current_player.color} is in check"  
+          end
           puts solicit_move
           from_x = get_move.to_i
           puts solicit_move
@@ -44,7 +46,6 @@ module TwoPlayerChess
           puts solicit_move
           to_y = get_move.to_i
           puts "from (#{from_x},#{from_y}) => (#{to_x},#{to_y})"
-
           valid_move = board.valid_move?(current_player.color,from_x, from_y, to_x, to_y)
           puts "valid_move = #{valid_move}"
         end until valid_move != false
@@ -52,6 +53,15 @@ module TwoPlayerChess
         if valid_move == :castle
           board.castle_rook(current_player.color,from_x,from_y,to_x)
         end
+        if board.in_check?(other_player.color)
+          if board.check_mate?(other_player.color)
+            check_mate = true
+            puts "#{other_player.color} has been check-mated"
+            break # does this take us outside of begin end until loop
+          #else
+          #  puts "#{other_player.color} is in check"  
+          end            
+        end        
         if board.game_over
           puts game_over_message
           board.formatted_grid
