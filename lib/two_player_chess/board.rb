@@ -95,12 +95,21 @@ module TwoPlayerChess
       set_cell(7,7, Rook.new(:black))
     end
 
+    def out_of_bounds(val)
+      return true if val < 0 || val > 7
+      false
+    end
+
 # returns :move if it is a valid move
 # returns :capture if it is a valid capture
 # returns :castle if it is a valid castling move
 # returns :en_passe if it is a valid en_passe move
 # returns false if it is an invalid move or capture
     def valid_move?(color, from_x, from_y, to_x, to_y)
+      return false if out_of_bounds(from_x)
+      return false if out_of_bounds(from_y)
+      return false if out_of_bounds(to_x)
+      return false if out_of_bounds(to_y)
       source = get_cell(from_x,from_y).value
       destination = get_cell(to_x, to_y).value
       # this should be checked at input - check if source and destintion are on_board
@@ -342,10 +351,21 @@ for each of the pieces (of the current color) on the board
       false
     end
 
-    def formatted_grid
-    	grid.each do |row|
-    		puts row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ")
+    def formatted_grid(perspective = :white)
+      
+      if perspective == :white
+        display = grid.reverse # but this won't work since pieces will be backwards
+        display.each do |row|
+          puts row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ")
         end
+      else
+        display = grid 
+        display.each do |row|
+          row_display = row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ")
+          puts row_display.reverse
+        end        
+      end
+
     end
 
     def draw?

@@ -7,7 +7,7 @@ module TwoPlayerChess
   	  @players = players
   	  @board = board
       board.set_up
-  	  @current_player, @other_player = players.shuffle
+  	  @current_player, @other_player = players
   	end
 
     def switch_players
