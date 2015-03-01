@@ -353,12 +353,14 @@ for each of the pieces (of the current color) on the board
 
     def formatted_grid(perspective = :white)
       
+      col_headers = "  " + %w(a b c d e f g h).join(" ")
       if perspective == :white
-        display = grid.reverse # but this won't work since pieces will be backwards
-        display.each do |row|
-          puts row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ")
+        display = grid.reverse
+        display.each_with_index do |row, i|
+          puts (8-i).to_s + " " + row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ")
         end
-      else
+        puts col_headers
+      else # untested below
         display = grid 
         display.each do |row|
           row_display = row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ")

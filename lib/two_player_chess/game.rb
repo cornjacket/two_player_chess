@@ -2,12 +2,17 @@
 module TwoPlayerChess
   class Game
   	attr_reader :players, :board, :current_player, :other_player
+    attr_accessor :from_x, :from_y, :to_x, :to_y
   	
   	def initialize(players, board = Board.new)
   	  @players = players
   	  @board = board
       board.set_up
   	  @current_player, @other_player = players
+      @from_x = 0
+      @from_y = 0
+      @to_x = 0
+      @to_y = 0
   	end
 
     def switch_players
@@ -15,12 +20,22 @@ module TwoPlayerChess
     end
 
     def solicit_move
-      "#{current_player.name}: Enter a number between 0 and 7 to make your move"
+      "#{current_player.name}: Enter your move (ie. e2e4)"
     end
 
+# Need to test this
     def get_move(human_move = gets.chomp)
-      human_move.to_s
-      #human_move_to_coordinate(human_move)
+      if ( human_move =~ /^[a-hA-H][1-8][a-hA-H][1-8]/ )
+          self.from_x = alpha_to_int(human_move[0].downcase)
+          self.from_y = human_move[1].to_i - 1
+          self.to_x   = alpha_to_int(human_move[2].downcase)
+          self.to_y   = human_move[3].to_i - 1        
+        return
+      end
+      self.from_x = -1
+      self.from_y = -1
+      self.to_x   = -1
+      self.to_y   = -1
     end
 
     def game_over_message
@@ -29,7 +44,7 @@ module TwoPlayerChess
     end
 
     def play
-      puts "#{current_player.name} has randomly been selected as the first player"
+
       while true
         begin
           board.formatted_grid
@@ -38,13 +53,7 @@ module TwoPlayerChess
             puts "#{current_player.color} is in check"  
           end
           puts solicit_move
-          from_x = get_move.to_i
-          puts solicit_move
-          from_y = get_move.to_i
-          puts solicit_move
-          to_x = get_move.to_i
-          puts solicit_move
-          to_y = get_move.to_i
+          get_move
           puts "from (#{from_x},#{from_y}) => (#{to_x},#{to_y})"
           valid_move = board.valid_move?(current_player.color,from_x, from_y, to_x, to_y)
           puts "valid_move = #{valid_move}"
@@ -74,17 +83,16 @@ module TwoPlayerChess
 
     private
 
-    def human_move_to_coordinate(human_move)
+    def alpha_to_int(human_move)
       mapping = {
-        "1" => [0,0],
-        "2" => [1,0],
-        "3" => [2,0],
-        "4" => [0,1],
-        "5" => [1,1],
-        "6" => [2,1],
-        "7" => [0,2],
-        "8" => [1,2],
-        "9" => [2,2]
+        "a" => 0,
+        "b" => 1,
+        "c" => 2,
+        "d" => 3,
+        "e" => 4,
+        "f" => 5,
+        "g" => 6,
+        "h" => 7
       }
       mapping[human_move]
     end
