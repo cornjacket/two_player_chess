@@ -353,19 +353,22 @@ for each of the pieces (of the current color) on the board
 
     def formatted_grid(perspective = :white)
       
-      col_headers = "  " + %w(a b c d e f g h).join(" ")
+      
       if perspective == :white
+        col_headers = %w(a b c d e f g h).join(" ")
         display = grid.reverse
         display.each_with_index do |row, i|
           puts (8-i).to_s + " " + row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ")
         end
-        puts col_headers
+        puts "  " + col_headers
       else # untested below
+        col_headers = %w(a b c d e f g h).join(" ")
         display = grid 
-        display.each do |row|
-          row_display = row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ")
+        display.each_with_index do |row, i|
+          row_display = row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ") + " " + (i+1).to_s
           puts row_display.reverse
-        end        
+        end   
+        puts "  " + col_headers.reverse     
       end
 
     end
