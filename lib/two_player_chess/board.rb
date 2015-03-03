@@ -126,6 +126,8 @@ else
   puts "move"
 end
 
+      # where do I check for pawn promotion
+
       # then check if piece exists to move at source
       return false if source == nil
       # then check if calling player is same as piece color
@@ -147,12 +149,6 @@ end
           end
         end
       end
-      # closest rook exists (not nil and special_move == :rook_castle) where it should, match color, first_move is true, 
-      # closest initial rook square to destination has a rook with first_move == true
-      # empty spaces in between source and closest rook position
-      # empty_squares_between(from_x,from_y,to_y)
-
-
       # check if move is a capture or just a move by seeing if destination is
       # occupied by opposite color, then check if piece can move to destination
       # checking for capture amounts to checking if destination != nil since
@@ -164,6 +160,7 @@ end
           if move_creates_check?(color,from_x,from_y,to_x,to_y)
             return false
           else 
+            return :promotion if source.special_move == :two_step && pawn_at_last_position?(color,to_y)
             return :capture
           end
         end
@@ -177,6 +174,7 @@ end
           if move_creates_check?(color,from_x,from_y,to_x,to_y)
             return false
           else 
+            return :promotion if source.special_move == :two_step && pawn_at_last_position?(color,to_y)
             return :move
           end
         end        
@@ -195,25 +193,6 @@ for each of the pieces (of the current color) on the board
     call move_creates_check? for each. Return false at the first false received from move_creates_check? If
     move_creates_check? never returns false for all the pieces on the board, then return true, there is a
     checkmate on the board. 
-=end
-=begin
-    def check_mate?(color)
-      8.times do |x|
-        8.times do |y|
-          piece = get_cell(x,y).value
-          if piece != nil && piece.color == color
-            puts "check_mate? color = #{color}"
-            valid_moves = piece.captures(x,y,self)
-            valid_moves = valid_moves + piece.moves(x,y,self) if piece.special_move == :two_step
-            valid_moves.each do |loc|
-              print "check_mate? loc = #{loc[0]},#{loc[1]} "
-              return false if !move_creates_check?(color,x,y,loc[0],loc[1])
-            end # do |loc|
-          end  # if
-        end # do |y|
-      end # do |x|
-      true
-    end # def
 =end
     def check_mate?(color)
       8.times do |x|
@@ -241,6 +220,7 @@ for each of the pieces (of the current color) on the board
       end # do |x|
       true
     end # def
+
     # method creates a deep_copy of the current board setup, executes the hypothetical move on the board copy,
     # and then checks to see if the hypothetical move causes a check.
     def move_creates_check?(color, from_x, from_y, to_x, to_y, castle=false)
@@ -296,8 +276,38 @@ for each of the pieces (of the current color) on the board
       # check if king_loc(color) = source location, and adjust king_loc accordingly
       set_king_location(color, [to_x,to_y]) if get_king_location(color) == [from_x,from_y]
       piece.first_move = false if piece.special_move != false
-      set_cell(to_x,to_y, piece)
+      # if piece is pawn and pawn location is at last position on board, then query user for promotion
+      # if piece.special_move == true && pawn_at_last_position(color,to_y)
+      #   set_cell(to_x_to_y,pawn_promotion(color))
+      # else
+      #set_cell(to_x,to_y, piece)
+      #if piece.special_move == :two_step && pawn_at_last_position?(color,to_y)
+      #  set_cell(to_x,to_y,promote_pawn(color))
+      #else
+        set_cell(to_x,to_y, piece)
+      #end
       set_cell(from_x,from_y, nil)
+    end
+
+    # need to test
+    def pawn_at_last_position?(color,row)
+      final = (color == :white) ? 7 : 0
+      return true if row == final
+      return false
+    end
+
+    # need to test
+    def promote_pawn(color,to_x,to_y,piece_type)
+        if piece_type == :knight
+          piece = Knight.new(color)
+        elsif piece_type == :bishop
+          piece = Bishop.new(color)
+        elsif piece_type == :rook
+          piece = Rook.new(color)
+        else
+          piece = Queen.new(color)
+        end      
+      set_cell(to_x,to_y,piece) #promote_pawn(color))    
     end
 
     def get_cell(x, y)

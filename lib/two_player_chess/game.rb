@@ -1,3 +1,4 @@
+# coding: utf-8
 # lib/tic_tac_toe_OOP/game.rb
 module TwoPlayerChess
   class Game
@@ -38,6 +39,28 @@ module TwoPlayerChess
       self.to_y   = -1
     end
 
+    def get_promotion(color)
+      done = false
+      while !done
+        print "#{color}'s pawn has been promoted. Which piece do you select? (q, r, b, n) :"
+        choice = gets.chomp.downcase # what is wrong with this????
+        if choice[0] == 'q'
+          result = :queen
+          done = true
+        elsif choice[0] == 'r'
+          result = :rook
+          done = true
+        elsif choice[0] == 'b'
+          result = :bishop
+          done = true
+        elsif choice[0] == 'n'
+          result = :knight
+          done = true
+        end
+      end
+      result
+    end  
+
     def game_over_message
       return "#{current_player.name} won!" if board.game_over == :winner
       return "The game ended in a tie" if board.game_over == :draw
@@ -47,20 +70,29 @@ module TwoPlayerChess
 
       while true
         begin
+          checkmark = "\u2713"
+          puts checkmark
+          puts checkmark.encode('utf-8')
+          puts checkmark.force_encoding('utf-8')
           board.formatted_grid
           puts ""
-          if board.in_check?(current_player.color)
-            puts "#{current_player.color} is in check"  
+          color = current_player.color
+          if board.in_check?(color)
+            puts "#{color} is in check"  
           end
           puts solicit_move
           get_move
           puts "from (#{from_x},#{from_y}) => (#{to_x},#{to_y})"
-          valid_move = board.valid_move?(current_player.color,from_x, from_y, to_x, to_y)
+          valid_move = board.valid_move?(color,from_x, from_y, to_x, to_y)
           puts "valid_move = #{valid_move}"
         end until valid_move != false
         board.move_piece(from_x, from_y, to_x, to_y) #if valid_move != false        
+        # the following check should be moved into Board.move_piece
         if valid_move == :castle
-          board.castle_rook(current_player.color,from_x,from_y,to_x)
+          board.castle_rook(color,from_x,from_y,to_x)
+        elsif valid_move == :promotion # need to add some user input here
+          #puts(get_promotion(color))
+          board.promote_pawn(color,to_x,to_y,get_promotion(color))
         end
         if board.in_check?(other_player.color)
           if board.check_mate?(other_player.color)
@@ -75,9 +107,9 @@ module TwoPlayerChess
           puts game_over_message
           board.formatted_grid
           return
-       else
-         switch_players
-         end
+   #    else
+   #      switch_players
+        end
       end      
     end
 

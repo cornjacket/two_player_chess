@@ -38,10 +38,10 @@ module TwoPlayerChess
       valid_moves = []      
       if color == :white
         possible_moves = [ [col,row+1] ]
-        possible_moves << [ col,row+2 ] if first_move
+        possible_moves << [ col,row+2 ] if first_move && board.get_cell(col,row+1).value == nil
       else
         possible_moves = [ [col,row-1] ]
-        possible_moves << [ col,row-2 ] if first_move
+        possible_moves << [ col,row-2 ] if first_move && board.get_cell(col,row-1).value == nil
       end
       possible_moves.each do |tuple|
         valid_moves << tuple if on_board(tuple)
