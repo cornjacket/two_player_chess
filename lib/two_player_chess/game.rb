@@ -87,11 +87,9 @@ module TwoPlayerChess
           puts "valid_move = #{valid_move}"
         end until valid_move != false
         board.move_piece(from_x, from_y, to_x, to_y) #if valid_move != false        
-        # the following check should be moved into Board.move_piece
         if valid_move == :castle
           board.castle_rook(color,from_x,from_y,to_x)
-        elsif valid_move == :promotion # need to add some user input here
-          #puts(get_promotion(color))
+        elsif valid_move == :promotion 
           board.promote_pawn(color,to_x,to_y,get_promotion(color))
         end
         if board.in_check?(other_player.color)
@@ -107,8 +105,8 @@ module TwoPlayerChess
           puts game_over_message
           board.formatted_grid
           return
-   #    else
-   #      switch_players
+        else
+          switch_players
         end
       end      
     end

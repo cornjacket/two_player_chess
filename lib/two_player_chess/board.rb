@@ -5,6 +5,7 @@ module TwoPlayerChess
     # these could be private later but i think internal self references must be removed
     attr_accessor :white_king, :black_king
     attr_accessor :white_king_loc, :black_king_loc
+    attr_accessor :en_passe
 
     def abs(a)
       return -a if a < 0
@@ -15,6 +16,7 @@ module TwoPlayerChess
       @max_row = 8 # these could be changeable
       @max_col = 8 # these could be changeable      
   	  @grid = input.fetch(:grid, default_grid)  
+      @en_passe = {} #{:white => nil, :black => nil}
   	end
 
     # shallow copy can not be used because, any piece movement in copied grid array (ie. Castle,Pawn movement) will have
@@ -137,14 +139,28 @@ end
       # check if moving piece to destination will indirectly cause check for king
       # what about directly causing check for king - how is that remedied
 
-      # check if move may cause an en_passe in opponent's next move
+      # check if move may cause an en_passe in opponent's next move -- this is done below
 
       # check if move is an en_passe
+      # how to check if it is an en_passe
+      # first is color's piece a pawn
+      # second is en_passe(color) != nil then it has a  column,row where the offending piece lives
+     
+      # we will have to return :en_passe to game so that game will remove offending piece since move_to wont do it.
+      passe = en_passe[color]
+      puts "en_passe = #{en_passe}"
+      puts "passe = #{passe}"
+      if passe != nil && source.special_move == :two_step && passe[1] == from_y && passe[0] == to_x && (abs(from_x-to_x)==1)
+        self.en_passe[opposite_color(color)] = nil
+        puts "En passe"
+        return :en_passe
+      end
 
       # check if castle
       if source.special_move == :king_castle && source.first_move == true
         if from_y == to_y && abs(from_x-to_x) == 2 && !in_check?(color)
-          if closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if          
+          if closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if 
+            self.en_passe[opposite_color(color)] = nil         
             return :castle if !move_creates_check?(color,from_x,from_y,to_x,to_y,true)
           end
         end
@@ -160,6 +176,7 @@ end
           if move_creates_check?(color,from_x,from_y,to_x,to_y)
             return false
           else 
+            self.en_passe[opposite_color(color)] = nil                     
             return :promotion if source.special_move == :two_step && pawn_at_last_position?(color,to_y)
             return :capture
           end
@@ -173,7 +190,18 @@ end
         if source.moves(from_x,from_y,self).include?([to_x,to_y])
           if move_creates_check?(color,from_x,from_y,to_x,to_y)
             return false
-          else 
+          else
+            if (source.special_move == :two_step) && (abs(from_y-to_y)==2)
+              # recording an en passe is done by recording the final destination of the pawn in the en_passe hash under
+              # opposing color. this info can be used to deduce where destination is for the en passe
+              puts "DRT 1"
+              self.en_passe[opposite_color(color)] = [to_x,to_y]
+              puts "New en_passe = #{en_passe}"
+            else
+              puts "DRT 2"
+              self.en_passe[opposite_color(color)] = nil
+              puts "New en_passe = #{en_passe}"              
+            end
             return :promotion if source.special_move == :two_step && pawn_at_last_position?(color,to_y)
             return :move
           end
@@ -184,6 +212,13 @@ end
       return false
     end
 
+# need specs for this
+def en_passe_capture(color)
+  to_capture = en_passe[color]
+  x = to_capture[0]
+  y = to_capture[1]
+  set_cell(x,y,nil)
+end
 =begin
 Need to check for check mate - 
 if player is under check, then check for check mate.
@@ -236,7 +271,7 @@ for each of the pieces (of the current color) on the board
       [rook_x,rook_y]
     end
 
-    def closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color, returns nil if 
+    def closest_rook_can_castle?(color,from_x,from_y,to_x) # looks for closest rook of color
       rook_x, rook_y = closest_rook_coord(color,from_x,from_y,to_x) 
       rook = get_cell(rook_x,rook_y).value
       if rook != nil && rook.special_move == :rook_castle && rook.first_move == true && rook.color == color && empty_squares_between?(from_x, from_y, rook_x) 
@@ -276,16 +311,7 @@ for each of the pieces (of the current color) on the board
       # check if king_loc(color) = source location, and adjust king_loc accordingly
       set_king_location(color, [to_x,to_y]) if get_king_location(color) == [from_x,from_y]
       piece.first_move = false if piece.special_move != false
-      # if piece is pawn and pawn location is at last position on board, then query user for promotion
-      # if piece.special_move == true && pawn_at_last_position(color,to_y)
-      #   set_cell(to_x_to_y,pawn_promotion(color))
-      # else
-      #set_cell(to_x,to_y, piece)
-      #if piece.special_move == :two_step && pawn_at_last_position?(color,to_y)
-      #  set_cell(to_x,to_y,promote_pawn(color))
-      #else
-        set_cell(to_x,to_y, piece)
-      #end
+      set_cell(to_x,to_y, piece)
       set_cell(from_x,from_y, nil)
     end
 
@@ -307,7 +333,7 @@ for each of the pieces (of the current color) on the board
         else
           piece = Queen.new(color)
         end      
-      set_cell(to_x,to_y,piece) #promote_pawn(color))    
+      set_cell(to_x,to_y,piece)  
     end
 
     def get_cell(x, y)
@@ -335,7 +361,7 @@ for each of the pieces (of the current color) on the board
 
     end
 
-    # definitely need specs for this
+    # need specs for this
     def in_check?(color)
       king_loc = get_king_location(color)
       opposite_color = (color == :white) ? :black : :white
@@ -361,18 +387,15 @@ for each of the pieces (of the current color) on the board
       false
     end
 
-    def formatted_grid(perspective = :white)
-      
-      
+    def formatted_grid(perspective = :white)      
+      col_headers = %w(a b c d e f g h).join(" ")
       if perspective == :white
-        col_headers = %w(a b c d e f g h).join(" ")
         display = grid.reverse
         display.each_with_index do |row, i|
           puts (8-i).to_s + " " + row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ")
         end
         puts "  " + col_headers
-      else # untested below
-        col_headers = %w(a b c d e f g h).join(" ")
+      else
         display = grid 
         display.each_with_index do |row, i|
           row_display = row.map { |cell| cell.value.nil? ? "_" : cell.value.to_s }.join(" ") + " " + (i+1).to_s
@@ -380,7 +403,6 @@ for each of the pieces (of the current color) on the board
         end   
         puts "  " + col_headers.reverse     
       end
-
     end
 
     def draw?
@@ -389,7 +411,7 @@ for each of the pieces (of the current color) on the board
 
     def winner?
       return false
-      return true if !get_cell(0,2).value.nil? # upper left white pawn moves one square
+      return true if !get_cell(0,2).value.nil? # early testing
       false
     end
 
@@ -398,6 +420,11 @@ for each of the pieces (of the current color) on the board
 
     def default_grid
       Array.new(max_row) { Array.new(max_col) { Cell.new} }
+    end
+
+    def opposite_color(color)
+      return :black if color == :white
+      return :white
     end
 
   end
